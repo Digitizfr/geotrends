@@ -1,0 +1,453 @@
+{
+  "genere": "2026-11-25T02:10:28.633Z",
+  "captures": {
+    "fr": {
+      "connexion": {
+        "fichier": "/docs/captures/fr/connexion.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/connexion"
+      },
+      "vue": {
+        "fichier": "/docs/captures/fr/vue.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/vue"
+      },
+      "questions": {
+        "fichier": "/docs/captures/fr/questions.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/questions"
+      },
+      "question": {
+        "fichier": "/docs/captures/fr/question.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/questions/[id]"
+      },
+      "reponses": {
+        "fichier": "/docs/captures/fr/reponses.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/reponses"
+      },
+      "concurrents": {
+        "fichier": "/docs/captures/fr/concurrents.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/concurrents"
+      },
+      "sources": {
+        "fichier": "/docs/captures/fr/sources.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/sources"
+      },
+      "videos": {
+        "fichier": "/docs/captures/fr/videos.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/videos"
+      },
+      "google": {
+        "fichier": "/docs/captures/fr/google.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/google"
+      },
+      "actions": {
+        "fichier": "/docs/captures/fr/actions.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/actions"
+      },
+      "actions-resultats": {
+        "fichier": "/docs/captures/fr/actions-resultats.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/actions?onglet=resultats"
+      },
+      "faits": {
+        "fichier": "/docs/captures/fr/faits.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/faits"
+      },
+      "rapport": {
+        "fichier": "/docs/captures/fr/rapport.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/rapport"
+      },
+      "audit": {
+        "fichier": "/docs/captures/fr/audit.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/audit?url=…"
+      },
+      "projets": {
+        "fichier": "/docs/captures/fr/projets.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/projets"
+      },
+      "projet-nouveau": {
+        "fichier": "/docs/captures/fr/projet-nouveau.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/projets/nouveau"
+      },
+      "projet": {
+        "fichier": "/docs/captures/fr/projet.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/projets/[id]?onglet=marque"
+      },
+      "projet-questions": {
+        "fichier": "/docs/captures/fr/projet-questions.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/projets/[id]?onglet=questions"
+      },
+      "projet-releves": {
+        "fichier": "/docs/captures/fr/projet-releves.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/projets/[id]"
+      },
+      "reglages": {
+        "fichier": "/docs/captures/fr/reglages.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/reglages"
+      },
+      "couts": {
+        "fichier": "/docs/captures/fr/couts.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/admin/couts"
+      },
+      "vue-courbe": {
+        "fichier": "/docs/captures/fr/vue-courbe.webp",
+        "largeur": 1396,
+        "hauteur": 1470,
+        "ecran": "/vue"
+      },
+      "vue-alertes": {
+        "fichier": "/docs/captures/fr/vue-alertes.webp",
+        "largeur": 2264,
+        "hauteur": 540,
+        "ecran": "/vue"
+      },
+      "question-presence": {
+        "fichier": "/docs/captures/fr/question-presence.webp",
+        "largeur": 2264,
+        "hauteur": 504,
+        "ecran": "/questions/[id]"
+      },
+      "question-colonnes": {
+        "fichier": "/docs/captures/fr/question-colonnes.webp",
+        "largeur": 2264,
+        "hauteur": 1554,
+        "ecran": "/questions/[id]"
+      },
+      "action-fiche": {
+        "fichier": "/docs/captures/fr/action-fiche.webp",
+        "largeur": 2264,
+        "hauteur": 2382,
+        "ecran": "/actions?onglet=resultats&action=…"
+      },
+      "faits-contradictions": {
+        "fichier": "/docs/captures/fr/faits-contradictions.webp",
+        "largeur": 2264,
+        "hauteur": 626,
+        "ecran": "/faits"
+      },
+      "reglages-rythme": {
+        "fichier": "/docs/captures/fr/reglages-rythme.webp",
+        "largeur": 2264,
+        "hauteur": 508,
+        "ecran": "/reglages"
+      },
+      "projet-prix": {
+        "fichier": "/docs/captures/fr/projet-prix.webp",
+        "largeur": 2264,
+        "hauteur": 1064,
+        "ecran": "/projets/[id]"
+      },
+      "projet-nouveau-recap": {
+        "fichier": "/docs/captures/fr/projet-nouveau-recap.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/projets/nouveau"
+      },
+      "invitation": {
+        "fichier": "/docs/captures/fr/invitation.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/invitation/[jeton]"
+      },
+      "reglages-comptes": {
+        "fichier": "/docs/captures/fr/reglages-comptes.webp",
+        "largeur": 2264,
+        "hauteur": 980,
+        "ecran": "/reglages"
+      },
+      "partages": {
+        "fichier": "/docs/captures/fr/partages.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/partages"
+      },
+      "partage-page": {
+        "fichier": "/docs/captures/fr/partage-page.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/partage/[jeton]"
+      },
+      "pages": {
+        "fichier": "/docs/captures/fr/pages.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/pages"
+      },
+      "page-fiche": {
+        "fichier": "/docs/captures/fr/page-fiche.webp",
+        "largeur": 2264,
+        "hauteur": 3068,
+        "ecran": "/pages?fiche=…"
+      },
+      "premier-compte": {
+        "fichier": "/docs/captures/fr/premier-compte.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/connexion"
+      }
+    },
+    "en": {
+      "connexion": {
+        "fichier": "/docs/captures/en/connexion.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/connexion"
+      },
+      "vue": {
+        "fichier": "/docs/captures/en/vue.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/vue"
+      },
+      "questions": {
+        "fichier": "/docs/captures/en/questions.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/questions"
+      },
+      "question": {
+        "fichier": "/docs/captures/en/question.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/questions/[id]"
+      },
+      "reponses": {
+        "fichier": "/docs/captures/en/reponses.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/reponses"
+      },
+      "concurrents": {
+        "fichier": "/docs/captures/en/concurrents.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/concurrents"
+      },
+      "sources": {
+        "fichier": "/docs/captures/en/sources.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/sources"
+      },
+      "videos": {
+        "fichier": "/docs/captures/en/videos.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/videos"
+      },
+      "google": {
+        "fichier": "/docs/captures/en/google.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/google"
+      },
+      "actions": {
+        "fichier": "/docs/captures/en/actions.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/actions"
+      },
+      "actions-resultats": {
+        "fichier": "/docs/captures/en/actions-resultats.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/actions?onglet=resultats"
+      },
+      "faits": {
+        "fichier": "/docs/captures/en/faits.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/faits"
+      },
+      "rapport": {
+        "fichier": "/docs/captures/en/rapport.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/rapport"
+      },
+      "audit": {
+        "fichier": "/docs/captures/en/audit.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/audit?url=…"
+      },
+      "projets": {
+        "fichier": "/docs/captures/en/projets.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/projets"
+      },
+      "projet-nouveau": {
+        "fichier": "/docs/captures/en/projet-nouveau.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/projets/nouveau"
+      },
+      "projet": {
+        "fichier": "/docs/captures/en/projet.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/projets/[id]?onglet=marque"
+      },
+      "projet-questions": {
+        "fichier": "/docs/captures/en/projet-questions.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/projets/[id]?onglet=questions"
+      },
+      "projet-releves": {
+        "fichier": "/docs/captures/en/projet-releves.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/projets/[id]"
+      },
+      "reglages": {
+        "fichier": "/docs/captures/en/reglages.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/reglages"
+      },
+      "couts": {
+        "fichier": "/docs/captures/en/couts.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/admin/couts"
+      },
+      "vue-courbe": {
+        "fichier": "/docs/captures/en/vue-courbe.webp",
+        "largeur": 1396,
+        "hauteur": 1396,
+        "ecran": "/vue"
+      },
+      "vue-alertes": {
+        "fichier": "/docs/captures/en/vue-alertes.webp",
+        "largeur": 2264,
+        "hauteur": 540,
+        "ecran": "/vue"
+      },
+      "question-presence": {
+        "fichier": "/docs/captures/en/question-presence.webp",
+        "largeur": 2264,
+        "hauteur": 504,
+        "ecran": "/questions/[id]"
+      },
+      "question-colonnes": {
+        "fichier": "/docs/captures/en/question-colonnes.webp",
+        "largeur": 2264,
+        "hauteur": 1470,
+        "ecran": "/questions/[id]"
+      },
+      "action-fiche": {
+        "fichier": "/docs/captures/en/action-fiche.webp",
+        "largeur": 2264,
+        "hauteur": 2298,
+        "ecran": "/actions?onglet=resultats&action=…"
+      },
+      "faits-contradictions": {
+        "fichier": "/docs/captures/en/faits-contradictions.webp",
+        "largeur": 2264,
+        "hauteur": 626,
+        "ecran": "/faits"
+      },
+      "reglages-rythme": {
+        "fichier": "/docs/captures/en/reglages-rythme.webp",
+        "largeur": 2264,
+        "hauteur": 468,
+        "ecran": "/reglages"
+      },
+      "projet-prix": {
+        "fichier": "/docs/captures/en/projet-prix.webp",
+        "largeur": 2264,
+        "hauteur": 1064,
+        "ecran": "/projets/[id]"
+      },
+      "projet-nouveau-recap": {
+        "fichier": "/docs/captures/en/projet-nouveau-recap.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/projets/nouveau"
+      },
+      "invitation": {
+        "fichier": "/docs/captures/en/invitation.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/invitation/[jeton]"
+      },
+      "reglages-comptes": {
+        "fichier": "/docs/captures/en/reglages-comptes.webp",
+        "largeur": 2264,
+        "hauteur": 980,
+        "ecran": "/reglages"
+      },
+      "partages": {
+        "fichier": "/docs/captures/en/partages.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/partages"
+      },
+      "partage-page": {
+        "fichier": "/docs/captures/en/partage-page.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/partage/[jeton]"
+      },
+      "pages": {
+        "fichier": "/docs/captures/en/pages.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/pages"
+      },
+      "page-fiche": {
+        "fichier": "/docs/captures/en/page-fiche.webp",
+        "largeur": 2264,
+        "hauteur": 2986,
+        "ecran": "/pages?fiche=…"
+      },
+      "premier-compte": {
+        "fichier": "/docs/captures/en/premier-compte.webp",
+        "largeur": 2880,
+        "hauteur": 1800,
+        "ecran": "/connexion"
+      }
+    }
+  }
+}

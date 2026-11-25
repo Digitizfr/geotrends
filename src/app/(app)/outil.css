@@ -1,0 +1,910 @@
+/*
+ * Feuille de style de l'outil. L'outil porte les classes « site outil » : il
+ * reprend donc tels quels les jetons et les classes du site public
+ * (src/app/vitrine.css : papier, encre, filets, surligneur, .titre, .machine,
+ * .regle, .bouton, .ecran, .pastille, .jauge, .tampon…). Ce fichier n'ajoute
+ * que ce dont un outil de travail a besoin en plus : tableaux denses, champs,
+ * menu, états, graphiques (docs/ANALYSE-INTERFACES.md, section 6).
+ */
+.site.outil {
+  /* Dans l'outil, le texte le plus discret est plus foncé que sur le site (contraste 4,4). */
+  --encre-pale: #66716b;
+  --clair: #fffdf8;
+  --filet-fort: rgba(20, 32, 27, 0.42);
+  --absent-fond: #f6d9cf;
+  --absent-texte: #a8320f;
+  font-size: 15px;
+  line-height: 1.5;
+
+  /* Jetons lus par les graphiques de la bibliothèque Arc, ramenés à notre palette. */
+  --foreground: var(--encre);
+  --background: var(--papier);
+  --surface: var(--clair);
+  --surface-raised: var(--clair);
+  --surface-muted: var(--papier);
+  --text-secondary: var(--encre-douce);
+  --text-muted: var(--encre-pale);
+  --accent: var(--encre);
+  --accent-strong: var(--encre);
+  --border: rgba(20, 32, 27, 0.14);
+  --border-subtle: rgba(20, 32, 27, 0.1);
+  --border-strong: rgba(20, 32, 27, 0.55);
+  --success: var(--vert);
+  --danger: var(--vermillon);
+  --warning: #c07a00;
+  --font-body: var(--font-corps), ui-sans-serif, sans-serif;
+  --font-display: var(--font-mono), ui-monospace, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.0625rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.75rem;
+  --text-4xl: 2.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --tracking-body: 0;
+  --tracking-display: -0.03em;
+  --leading-body: 1.4;
+  --leading-display: 1.1;
+  --radius-control: 0px;
+  --radius-pill: 0px;
+  --shadow-floating: 4px 4px 0 var(--encre);
+  --shadow-raised: 4px 4px 0 var(--encre);
+  --control-height-sm: 2.25rem;
+  --duration-instant: 120ms;
+  --duration-fast: 160ms;
+  --duration-standard: 240ms;
+  --duration-spring: 580ms;
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Accès au clavier ────────────────────────────────────────────────────── */
+.site.outil summary:focus-visible,
+.site.outil input:focus-visible,
+.site.outil select:focus-visible,
+.site.outil textarea:focus-visible,
+.site.outil [role='slider']:focus-visible {
+  outline: 2px solid var(--encre);
+  outline-offset: 2px;
+}
+.site.outil .invisible-lecteur {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+/* ── Voix typographiques : celles du site, réglées pour un écran de travail ─ */
+.site.outil .titre-page {
+  font-family: var(--font-titre), Georgia, serif;
+  font-size: clamp(1.75rem, 1.5rem + 0.8vw, 2.125rem);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+}
+.site.outil .synthese {
+  font-family: var(--font-titre), Georgia, serif;
+  font-size: clamp(1.875rem, 1.1rem + 2.4vw, 3.25rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+.site.outil .machine {
+  color: var(--encre-douce);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+.site.outil .chiffre {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+.site.outil .grand-chiffre {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 1.75rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.site.outil .second {
+  color: var(--encre-douce);
+  font-size: 0.8125rem;
+}
+.site.outil .discret {
+  color: var(--encre-pale);
+}
+/* « C'est nous », dans un texte ou sur une ligne : le coup de surligneur du site. */
+.site.outil mark.nous,
+.site.outil .nous-plein {
+  background: var(--surligneur);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  color: var(--encre);
+  padding: 0 0.15em;
+}
+.site.outil .etiquette-nous {
+  background: var(--surligneur);
+  box-shadow: inset 0 0 0 1px var(--encre);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  padding: 0.05rem 0.35rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.site.outil button.lien {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.site.outil button.lien:hover {
+  text-decoration-thickness: 2px;
+}
+.site.outil .lien-fleche {
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+/* ── Boutons : ceux du site, à la taille d'un outil ──────────────────────── */
+.site.outil .bouton {
+  cursor: pointer;
+  font-size: 0.875rem;
+  gap: 0.5rem;
+  justify-content: center;
+  line-height: 1.2;
+  min-height: 2.375rem;
+  padding: 0.55rem 1rem;
+  white-space: nowrap;
+}
+/* Le bouton principal porte l'ombre dure, comme les fiches du site. */
+.site.outil .bouton:not(.bouton-creux) {
+  box-shadow: 4px 4px 0 var(--surligneur), 4px 4px 0 1px var(--encre);
+  margin: 0 5px 5px 0;
+}
+.site.outil .bouton:not(.bouton-creux):hover:not(:disabled) {
+  box-shadow: 6px 6px 0 var(--surligneur), 6px 6px 0 1px var(--encre);
+}
+.site.outil .bouton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+.site.outil .bouton-petit {
+  font-size: 0.8125rem;
+  min-height: 1.875rem;
+  padding: 0.3rem 0.65rem;
+}
+.site.outil .bouton-danger {
+  border-color: var(--absent-texte);
+  color: var(--absent-texte);
+}
+
+/* ── Champs ──────────────────────────────────────────────────────────────── */
+.site.outil .champ {
+  background: var(--clair);
+  border: 1px solid var(--encre);
+  border-radius: 0;
+  color: var(--encre);
+  display: block;
+  font-size: 0.9375rem;
+  padding: 0.45rem 0.6rem;
+  width: 100%;
+}
+.site.outil .champ::placeholder {
+  color: var(--encre-pale);
+}
+.site.outil .champ:focus {
+  box-shadow: 3px 3px 0 var(--surligneur);
+  outline: 2px solid var(--encre);
+  outline-offset: 0;
+}
+.site.outil .libelle {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.site.outil .aide {
+  color: var(--encre-douce);
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  margin-top: 0.25rem;
+}
+.site.outil input[type='checkbox'],
+.site.outil input[type='radio'] {
+  accent-color: var(--encre);
+  flex: none;
+  height: 1rem;
+  width: 1rem;
+}
+
+/* ── Feuilles : les « écrans » du site, en vrai ──────────────────────────── */
+.site.outil .ecran {
+  box-shadow: 6px 6px 0 var(--encre);
+  font-size: 0.875rem;
+  overflow: visible;
+}
+.site.outil .ecran-barre {
+  border-bottom-color: var(--encre);
+  padding: 0.65rem 1rem;
+}
+.site.outil .ecran .t4 {
+  font-size: 0.9375rem;
+}
+.site.outil .ecran .etiquette,
+.site.outil .etiquette {
+  color: var(--encre-douce);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.site.outil .ecran-corps {
+  overflow-x: visible;
+}
+.site.outil .surface {
+  background: var(--clair);
+  border: 1px solid var(--encre);
+}
+.site.outil .trait-double {
+  border-left: 3px double var(--encre);
+}
+
+/* ── Tableaux ────────────────────────────────────────────────────────────── */
+.site.outil .defile {
+  overflow-x: auto;
+}
+.site.outil .defile.haut {
+  max-height: 72vh;
+  overflow-y: auto;
+}
+.site.outil table.tableau {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+  width: 100%;
+}
+.site.outil .tableau th,
+.site.outil .tableau td {
+  border-bottom: 1px solid var(--filet);
+  padding: 0.5rem 0.875rem;
+  text-align: left;
+  vertical-align: middle;
+}
+.site.outil .tableau td {
+  height: 40px;
+}
+.site.outil .tableau.dense td {
+  height: 36px;
+  padding-block: 0.3rem;
+}
+.site.outil .tableau thead th {
+  background: var(--clair);
+  border-bottom: 1px solid var(--encre);
+  color: var(--encre-douce);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  line-height: 1.35;
+  position: sticky;
+  text-transform: uppercase;
+  top: 0;
+  vertical-align: bottom;
+  white-space: nowrap;
+  z-index: 2;
+}
+.site.outil .tableau thead th a:hover {
+  color: var(--encre);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.site.outil .tableau tbody th {
+  font-weight: 400;
+}
+.site.outil .tableau tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.site.outil .tableau tfoot > tr > * {
+  background: var(--papier);
+  border-bottom: 0;
+  border-top: 1px solid var(--encre);
+}
+.site.outil .tableau tbody tr:hover > * {
+  background: var(--papier);
+}
+.site.outil .tableau .num {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+/* Le filet vertical double : avant toute colonne mesurée par l'API. */
+.site.outil .tableau .api {
+  border-left: 3px double var(--encre);
+}
+/* La ligne d'une IA mesurée par l'API : séparée des autres par un filet double. */
+.site.outil .tableau tr.a-part > * {
+  border-top: 3px double var(--encre);
+}
+/* La première colonne reste fixe quand le tableau défile sur le côté. */
+.site.outil .tableau .fixe {
+  background: var(--clair);
+  left: 0;
+  position: sticky;
+  z-index: 1;
+}
+.site.outil .tableau thead .fixe {
+  z-index: 3;
+}
+.site.outil .tableau tbody tr:hover > .fixe {
+  background: var(--papier);
+}
+/* Notre ligne dans un classement : teintée, avec un trait d'encre à gauche. */
+.site.outil .tableau tr.nous > * {
+  background: var(--papier);
+}
+.site.outil .tableau tr.nous > :first-child {
+  box-shadow: inset 3px 0 0 var(--encre);
+}
+.site.outil .tableau a.ligne-lien:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── États : les pastilles du site, avec un signe en plus de la couleur ──── */
+.site.outil .pastille {
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+.site.outil .pastille .signe {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  margin-right: 0.3em;
+}
+.site.outil .pastille.absent {
+  background: var(--absent-fond);
+  color: var(--absent-texte);
+}
+.site.outil .pastille.sans {
+  background: transparent;
+  border: 1px dashed var(--encre-pale);
+  color: var(--encre-douce);
+  font-weight: 500;
+}
+.site.outil .pastille.erreur {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--vermillon);
+  color: var(--absent-texte);
+}
+/* Miniature d'une vidéo YouTube citée : 16/9, cadre fin, comme une vignette collée. */
+.site.outil .miniature {
+  aspect-ratio: 16 / 9;
+  background: var(--filet);
+  border: 1px solid var(--filet);
+  display: block;
+  height: auto;
+  object-fit: cover;
+}
+/* Un trait par relevé, comme sur le site : jaune quand la marque est là. */
+.site.outil .coches span {
+  width: 0.4rem;
+}
+.site.outil .coches span.absente {
+  background: #e9c9bd;
+}
+.site.outil .coches span.rien {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--encre-pale);
+}
+/* Nombre de relevés plus anciens, non dessinés. */
+.site.outil .coches .coches-plus {
+  align-self: center;
+  color: var(--encre-pale);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  line-height: 1;
+  margin-right: 2px;
+}
+.site.outil .carreau {
+  display: inline-block;
+  height: 0.75rem;
+  vertical-align: -0.05rem;
+  width: 1.5rem;
+}
+.site.outil .carreau.cite {
+  background: var(--surligneur);
+  box-shadow: inset 0 0 0 1px var(--encre);
+}
+.site.outil .carreau.nomme {
+  background: var(--vert);
+}
+.site.outil .carreau.absent {
+  background: #e9c9bd;
+}
+.site.outil .carreau.neutre {
+  border: 1px dashed var(--encre-pale);
+}
+.site.outil .carreau.rien {
+  background: var(--papier-fonce);
+}
+.site.outil .puce {
+  border: 1px solid var(--filet-fort);
+  display: inline-block;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  padding: 0.05rem 0.4rem;
+  white-space: nowrap;
+}
+
+/* ── Chiffres clés : une ligne fine, comme sur l'écran du site ───────────── */
+.site.outil .tuiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.site.outil .tuile {
+  border-bottom: 1px solid var(--filet);
+  border-right: 1px solid var(--filet);
+  display: block;
+  min-width: 0;
+  padding: 0.9rem 1rem 1rem;
+}
+.site.outil .tuile.api {
+  background-image: repeating-linear-gradient(135deg, transparent 0 7px, rgba(20, 32, 27, 0.045) 7px 8px);
+  border-left: 3px double var(--encre);
+}
+@media (min-width: 900px) {
+  .site.outil .tuiles {
+    grid-template-columns: repeat(var(--colonnes, 4), minmax(0, 1fr));
+  }
+  .site.outil .tuile {
+    border-bottom: 0;
+  }
+  .site.outil .tuile:last-child {
+    border-right: 0;
+  }
+}
+.site.outil a.tuile:hover {
+  background-color: var(--papier);
+}
+
+/* ── Bandeaux et états vides ─────────────────────────────────────────────── */
+.site.outil .bandeau {
+  background: var(--clair);
+  border: 1px solid var(--encre);
+  border-left-width: 4px;
+  padding: 0.75rem 1rem;
+}
+.site.outil .bandeau.erreur {
+  border-color: var(--vermillon);
+}
+.site.outil .vide {
+  background: var(--clair);
+  border: 1px solid var(--encre);
+  box-shadow: 6px 6px 0 var(--encre);
+  padding: 1.75rem 1.5rem;
+}
+.site.outil .silhouette {
+  border: 1px dashed var(--encre-pale);
+  color: var(--encre-douce);
+  padding: 0.9rem 1rem;
+}
+.site.outil .squelette {
+  background: repeating-linear-gradient(0deg, var(--filet) 0 1px, transparent 1px 40px);
+  border: 1px solid var(--filet);
+}
+
+/* ── Onglets et cases à cocher de la barre du haut ───────────────────────── */
+.site.outil .onglets {
+  border-bottom: 2px solid var(--encre);
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+}
+.site.outil .onglet {
+  border: 1px solid transparent;
+  border-bottom: 0;
+  color: var(--encre-douce);
+  font-size: 0.9375rem;
+  padding: 0.45rem 0.9rem;
+  white-space: nowrap;
+}
+.site.outil .onglet:hover {
+  color: var(--encre);
+}
+.site.outil .onglet[aria-current='page'],
+.site.outil .onglet[aria-selected='true'] {
+  background: var(--encre);
+  color: var(--papier);
+  font-weight: 600;
+}
+.site.outil .choix {
+  align-items: center;
+  border: 1px solid var(--filet-fort);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.8125rem;
+  gap: 0.4rem;
+  line-height: 1.2;
+  min-height: 1.875rem;
+  padding: 0.25rem 0.6rem;
+  white-space: nowrap;
+}
+.site.outil .choix:hover {
+  border-color: var(--encre);
+}
+.site.outil .choix[aria-current='true'],
+.site.outil .choix[aria-pressed='true'],
+.site.outil .choix:has(input:checked) {
+  background: var(--clair);
+  border-color: var(--encre);
+  font-weight: 600;
+}
+.site.outil .choix.api {
+  border-style: dashed;
+}
+
+/* ── Menu : l'entrée active est surlignée, comme sur l'écran du site ─────── */
+.site.outil .entree {
+  align-items: center;
+  color: var(--encre-douce);
+  display: flex;
+  font-size: 0.9375rem;
+  gap: 0.6rem;
+  padding: 0.4rem 0.75rem;
+  white-space: nowrap;
+}
+.site.outil .entree:hover {
+  color: var(--encre);
+}
+.site.outil .entree[aria-current='page'] {
+  background: var(--surligneur);
+  box-shadow: inset 3px 0 0 var(--encre);
+  color: var(--encre);
+  font-weight: 700;
+}
+.site.outil .compteur {
+  border: 1px solid var(--encre);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-left: auto;
+  padding: 0 0.3rem;
+}
+@media (max-width: 899px) {
+  .site.outil .entree {
+    padding: 0.4rem 0.6rem;
+  }
+  .site.outil .entree[aria-current='page'] {
+    box-shadow: inset 0 -3px 0 var(--encre);
+  }
+  .site.outil .compteur {
+    margin-left: 0;
+  }
+}
+
+/* ── Panneau latéral, menu ouvert et fenêtre de dialogue ─────────────────── */
+.site.outil .panneau,
+.site.outil .menu-flottant {
+  background: var(--clair);
+  border: 1px solid var(--encre);
+  box-shadow: 6px 6px 0 var(--encre);
+}
+.site.outil dialog.dialogue {
+  background: var(--clair);
+  border: 1px solid var(--encre);
+  box-shadow: 8px 8px 0 var(--encre);
+  color: var(--encre);
+  margin: auto;
+  max-width: min(30rem, calc(100vw - 2rem));
+  padding: 1.25rem;
+}
+.site.outil dialog.dialogue::backdrop {
+  background: rgba(20, 32, 27, 0.5);
+}
+
+/* ── Barres droites : la jauge du site, et ses variantes ─────────────────── */
+.site.outil .jauge {
+  height: 8px;
+  position: relative;
+}
+.site.outil .jauge.fine {
+  height: 6px;
+}
+.site.outil .jauge > span.prevu {
+  background: repeating-linear-gradient(135deg, var(--encre-pale) 0 2px, transparent 2px 5px);
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+.site.outil .jauge.depasse > span:not(.prevu) {
+  background: var(--vermillon);
+}
+.site.outil .jauge.pointillee > span {
+  background: repeating-linear-gradient(90deg, var(--encre) 0 4px, transparent 4px 7px);
+}
+/* Barre découpée : à qui profitent les citations, d'où vient la visibilité. */
+.site.outil .decoupe {
+  border: 1px solid var(--encre);
+  display: flex;
+  height: 2rem;
+  width: 100%;
+}
+.site.outil .decoupe > * {
+  align-items: center;
+  border-left: 1px solid var(--encre);
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 3px;
+  overflow: hidden;
+  padding: 0 0.4rem;
+  white-space: nowrap;
+}
+.site.outil .decoupe > :first-child {
+  border-left: 0;
+}
+.site.outil .teinte-nous {
+  background: var(--surligneur);
+  color: var(--encre);
+}
+.site.outil .teinte-encre {
+  background: var(--encre);
+  color: var(--papier);
+}
+.site.outil .teinte-concurrent {
+  background: #e9c9bd;
+  color: var(--absent-texte);
+}
+.site.outil .teinte-vert {
+  background: var(--vert);
+  color: #fff;
+}
+.site.outil .teinte-s2 {
+  background: var(--color-serie-2);
+  color: #fff;
+}
+.site.outil .teinte-s3 {
+  background: var(--color-serie-3);
+  color: var(--encre);
+}
+.site.outil .teinte-s5 {
+  background: var(--color-serie-5);
+  color: var(--encre);
+}
+.site.outil .teinte-s6 {
+  background: var(--color-serie-6);
+  color: #fff;
+}
+.site.outil .teinte-papier {
+  background: var(--papier-fonce);
+  color: var(--encre);
+}
+.site.outil .teinte-vide {
+  background: repeating-linear-gradient(135deg, transparent 0 5px, rgba(20, 32, 27, 0.12) 5px 6px);
+  color: var(--encre-douce);
+}
+.site.outil .pave {
+  display: inline-block;
+  height: 0.6rem;
+  margin-right: 0.35rem;
+  vertical-align: -0.02rem;
+  width: 0.9rem;
+}
+
+/* ── Grilles colorées : une seule teinte, le chiffre toujours écrit ──────── */
+.site.outil .case {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  min-width: 5.5rem;
+  text-align: center;
+}
+.site.outil .tableau .case.g1,
+.site.outil .tableau tbody tr:hover > .case.g1 { background: var(--color-grille-1); }
+.site.outil .tableau .case.g2,
+.site.outil .tableau tbody tr:hover > .case.g2 { background: var(--color-grille-2); }
+.site.outil .tableau .case.g3,
+.site.outil .tableau tbody tr:hover > .case.g3 { background: var(--color-grille-3); }
+.site.outil .tableau .case.g4,
+.site.outil .tableau tbody tr:hover > .case.g4 { background: var(--color-grille-4); }
+.site.outil .tableau .case.g5,
+.site.outil .tableau tbody tr:hover > .case.g5 { background: var(--color-grille-5); color: #fff; }
+.site.outil .tableau .case.g6,
+.site.outil .tableau tbody tr:hover > .case.g6 { background: var(--color-grille-6); color: #fff; }
+.site.outil .tableau .case.absente,
+.site.outil .tableau tbody tr:hover > .case.absente { background: var(--absent-fond); color: var(--absent-texte); }
+.site.outil .meilleure {
+  box-shadow: inset 0 -3px 0 var(--vert);
+  font-weight: 700;
+}
+
+/* ── Texte d'une réponse d'IA (Markdown relevé tel quel) ─────────────────── */
+.site.outil .reponse {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.site.outil .reponse > * + * {
+  margin-top: 0.75em;
+}
+.site.outil .reponse h1,
+.site.outil .reponse h2,
+.site.outil .reponse h3,
+.site.outil .reponse h4 {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  margin-top: 1.25em;
+}
+.site.outil .reponse ul,
+.site.outil .reponse ol {
+  padding-left: 1.25em;
+}
+.site.outil .reponse ul {
+  list-style: disc;
+}
+.site.outil .reponse ol {
+  list-style: decimal;
+}
+.site.outil .reponse li + li {
+  margin-top: 0.25em;
+}
+.site.outil .reponse a {
+  text-decoration: underline;
+  text-decoration-color: var(--filet-fort);
+  text-underline-offset: 3px;
+}
+.site.outil .reponse strong {
+  font-weight: 700;
+}
+.site.outil .reponse hr {
+  border-color: var(--filet);
+}
+.site.outil .reponse table {
+  border-collapse: collapse;
+  display: block;
+  font-size: 0.8125rem;
+  overflow-x: auto;
+}
+.site.outil .reponse th,
+.site.outil .reponse td {
+  border: 1px solid var(--filet);
+  padding: 0.35em 0.6em;
+  text-align: left;
+  vertical-align: top;
+}
+.site.outil .reponse th {
+  background: var(--papier);
+  font-weight: 700;
+}
+.site.outil .reponse code {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.8125rem;
+}
+.site.outil .reponse blockquote {
+  border-left: 3px solid var(--encre);
+  color: var(--encre-douce);
+  padding-left: 0.75em;
+}
+/* Un concurrent suivi est souligné, jamais surligné. */
+.site.outil .reponse .concurrent {
+  text-decoration: underline;
+  text-decoration-color: var(--vermillon);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+/* Une source citée : une pastille numérotée à sa place dans le texte. */
+.site.outil .pastille-source {
+  background: var(--papier);
+  border: 1px solid var(--encre-pale);
+  display: inline-block;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  margin-left: 0.2em;
+  min-width: 1.35em;
+  padding: 0 0.25em;
+  text-align: center;
+  text-decoration: none !important;
+  vertical-align: 0.15em;
+}
+.site.outil .pastille-source.nous {
+  background: var(--surligneur);
+  border-color: var(--encre);
+}
+
+/* ── Graphiques dessinés à la main, dans le style de l'écran du site ─────── */
+.site.outil .graphique text {
+  fill: var(--encre-douce);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+}
+.site.outil .graphique .nom-serie {
+  font-family: var(--font-corps), ui-sans-serif, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+}
+/* Frise des relevés : une marque par relevé, surlignée quand la marque est là. */
+.site.outil .frise {
+  align-items: flex-end;
+  display: flex;
+  gap: 4px;
+  height: 2.25rem;
+}
+.site.outil .frise > * {
+  background: var(--encre);
+  display: block;
+  flex: 0 0 10px;
+  height: 45%;
+  opacity: 0.3;
+}
+.site.outil .frise > .la {
+  background: var(--surligneur);
+  box-shadow: inset 0 0 0 1.5px var(--encre);
+  height: 100%;
+  opacity: 1;
+}
+.site.outil .frise > .absente {
+  background: #e9c9bd;
+  box-shadow: inset 0 0 0 1px var(--vermillon);
+  opacity: 1;
+}
+.site.outil .frise > .rien {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--encre-pale);
+  height: 30%;
+  opacity: 1;
+}
+.site.outil .frise > [aria-current='true'] {
+  outline: 2px solid var(--encre);
+  outline-offset: 2px;
+}
+
+.site.outil details > summary {
+  cursor: pointer;
+}
+
+/* ── Teintes ajoutées pour les types de sites ────────────────────────────── */
+.site.outil .teinte-s4 {
+  background: var(--color-serie-4);
+  color: #fff;
+}
+.site.outil .teinte-clair {
+  background: var(--clair);
+  color: var(--encre);
+}
+/* Autres marques : la teinte des concurrents, en hachures (elles ne sont pas suivies). */
+.site.outil .teinte-marque {
+  background: repeating-linear-gradient(135deg, #e9c9bd 0 4px, var(--clair) 4px 7px);
+  color: var(--absent-texte);
+}
+/* Une frise de plus de vingt relevés passe à la ligne. */
+.site.outil .frise.longue {
+  flex-wrap: wrap;
+  height: auto;
+  row-gap: 4px;
+}
+.site.outil .frise.longue > * {
+  height: 1rem;
+}
+.site.outil .frise.longue > .la {
+  height: 1rem;
+}
+.site.outil .frise.longue > .rien {
+  height: 1rem;
+}

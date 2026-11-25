@@ -1,0 +1,45 @@
+{
+  "name": "geotrends",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3010",
+    "build": "next build",
+    "start": "next start -p 3010",
+    "lint": "eslint",
+    "creer-compte": "tsx scripts/creer-compte.ts",
+    "inviter": "tsx scripts/inviter.ts",
+    "entretien": "tsx scripts/entretien.ts",
+    "taches": "tsx scripts/taches.ts",
+    "verifier-docs": "tsx scripts/verifier-docs.ts && tsx scripts/exporter-docs.ts",
+    "indexnow": "tsx scripts/indexnow.ts",
+    "captures": "bash scripts/demo/tout.sh"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "better-auth": "^1.7.2",
+    "lucide-react": "^1.38.0",
+    "motion": "^14.14.0",
+    "next": "16.3.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "server-only": "^0.0.1",
+    "tsx": "^4.23.13"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.4",
+    "prisma": "^7.10.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

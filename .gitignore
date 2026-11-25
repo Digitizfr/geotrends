@@ -1,0 +1,43 @@
+# Dépendances
+node_modules/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Production
+build/
+dist/
+
+# Secrets : jamais dans le dépôt
+.env
+.env.*
+!.env.example
+*.key.txt
+*-token.txt
+*-api-key.txt
+
+# Prisma
+*.db
+*.db-journal
+
+# Système
+.DS_Store
+*.log
+
+# Client Prisma généré
+src/generated/
+.gstack/
+
+# Notes internes de l'équipe qui publie le projet : jamais dans le dépôt.
+CLAUDE.local.md
+notes-internes/
+
+# Réglages Docker propres à un serveur (réseau, noms de conteneurs).
+docker-compose.override.yml
+
+# Construction TypeScript, captures en cours.
+tsconfig.tsbuildinfo
+.captures-*/
+.build-demo.log

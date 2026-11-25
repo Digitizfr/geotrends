@@ -1,0 +1,946 @@
+/*
+ * Page d'accueil publique. Parti pris : un carnet de relevés, pas une plaquette
+ * de logiciel. Papier chaud, encre vert-noir, filets fins, chiffres en
+ * caractères de machine, et un seul coup de surligneur pour ce qui compte.
+ * Tout est limité à .site pour ne rien changer dans l'outil lui-même.
+ */
+.site {
+  --papier: #f2eee3;
+  --papier-fonce: #e8e2d2;
+  --encre: #14201b;
+  --encre-douce: #4d5a54;
+  --encre-pale: #7f8a83;
+  --filet: rgba(20, 32, 27, 0.16);
+  --vert: #0b7f5d;
+  --vermillon: #cf431c;
+  --surligneur: #ffe35a;
+  background-color: var(--papier);
+  /* Grain de papier : un bruit très léger, sans image à charger. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08 0 0 0 0 .12 0 0 0 0 .1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+  color: var(--encre);
+  font-family: var(--font-corps), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+.site ::selection {
+  background: var(--surligneur);
+}
+.site .cadre {
+  margin-inline: auto;
+  max-width: 76rem;
+  /* Marges de côté seulement : les marges du haut et du bas restent à la page. */
+  padding-inline: 1.25rem;
+}
+@media (min-width: 768px) {
+  .site .cadre {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* ── Voix typographiques ─────────────────────────────────────────────────── */
+.site .titre {
+  font-family: var(--font-titre), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.02;
+}
+.site .machine {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.site .chiffre-site {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+.site .surligne {
+  background: linear-gradient(transparent 58%, var(--surligneur) 58%, var(--surligneur) 94%, transparent 94%);
+  padding: 0 0.08em;
+}
+.site a.lien {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.site a.lien:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ── Règle graduée : la signature de la page ─────────────────────────────── */
+.site .regle {
+  height: 12px;
+  background-image:
+    repeating-linear-gradient(90deg, var(--encre) 0 1px, transparent 1px 60px),
+    repeating-linear-gradient(90deg, var(--encre) 0 1px, transparent 1px 12px);
+  background-size: 100% 12px, 100% 6px;
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  opacity: 0.55;
+}
+.site .trait-fort {
+  border-top: 2px solid var(--encre);
+}
+.site .trait {
+  border-top: 1px solid var(--filet);
+}
+
+/* ── Boutons ─────────────────────────────────────────────────────────────── */
+.site .bouton {
+  align-items: center;
+  background: var(--encre);
+  border: 1px solid var(--encre);
+  color: var(--papier);
+  display: inline-flex;
+  font-size: 0.95rem;
+  font-weight: 600;
+  gap: 0.6rem;
+  padding: 0.8rem 1.25rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.site .bouton:hover {
+  box-shadow: 4px 4px 0 var(--surligneur);
+  transform: translate(-2px, -2px);
+}
+.site .bouton-creux {
+  background: transparent;
+  color: var(--encre);
+}
+
+/* ── Fiche de relevé : une question, cinq lectures ───────────────────────── */
+.site .fiche {
+  background: color-mix(in srgb, var(--papier) 55%, #fff);
+  border: 1px solid var(--encre);
+  box-shadow: 6px 6px 0 var(--encre);
+}
+.site .lectures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.site .lecture {
+  border-top: 1px solid var(--filet);
+  padding: 1rem 1rem 1.15rem;
+}
+.site .lecture:nth-child(odd) {
+  border-right: 1px solid var(--filet);
+}
+@media (min-width: 900px) {
+  .site .lectures {
+    grid-template-columns: repeat(var(--colonnes, 5), minmax(0, 1fr));
+  }
+  .site .lecture,
+  .site .lecture:nth-child(odd) {
+    border-right: 1px solid var(--filet);
+  }
+  .site .lecture:last-child {
+    border-right: 0;
+  }
+}
+.site .verdict {
+  font-family: var(--font-titre), Georgia, serif;
+  font-size: 1.55rem;
+  line-height: 1.1;
+  margin-top: 0.7rem;
+}
+.site .verdict.absent {
+  color: var(--vermillon);
+}
+.site .verdict.present {
+  color: var(--encre);
+}
+.site .verdict.neutre {
+  color: var(--encre-pale);
+}
+
+/* ── Le grand chiffre ────────────────────────────────────────────────────── */
+.site .fraction {
+  font-family: var(--font-titre), Georgia, serif;
+  font-size: clamp(5.5rem, 17vw, 13.5rem);
+  letter-spacing: -0.04em;
+  line-height: 0.82;
+}
+.site .fraction .sur {
+  color: var(--encre-pale);
+  font-size: 0.42em;
+  letter-spacing: 0;
+  padding: 0 0.12em;
+  vertical-align: 0.42em;
+}
+.site .barre {
+  background: var(--encre);
+  height: 9px;
+  min-width: 3px;
+}
+
+/* Un trait par réponse relevée. */
+.site .traits {
+  align-items: flex-end;
+  display: flex;
+  gap: clamp(3px, 0.9vw, 10px);
+  height: 5.5rem;
+}
+.site .traits span {
+  background: var(--encre);
+  flex: 1;
+  height: 55%;
+  opacity: 0.28;
+}
+.site .traits span.present {
+  background: var(--surligneur);
+  box-shadow: inset 0 0 0 1.5px var(--encre);
+  height: 100%;
+  opacity: 1;
+}
+
+/* ── Registre des fonctions ──────────────────────────────────────────────── */
+.site .registre li {
+  align-items: baseline;
+  border-top: 1px solid var(--filet);
+  display: grid;
+  gap: 0.25rem 1.25rem;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  padding: 0.95rem 0;
+}
+@media (min-width: 900px) {
+  .site .registre li {
+    grid-template-columns: 2.25rem minmax(0, 15rem) minmax(0, 1fr) 10.5rem;
+  }
+}
+.site .registre li:hover .nom-fonction {
+  background: linear-gradient(transparent 58%, var(--surligneur) 58%, var(--surligneur) 94%, transparent 94%);
+}
+.site .etat-service,
+.site .etat-chantier {
+  white-space: nowrap;
+}
+.site .etat-service::before,
+.site .etat-chantier::before {
+  border: 1.5px solid var(--vert);
+  border-radius: 50%;
+  content: '';
+  display: inline-block;
+  height: 0.6rem;
+  margin-right: 0.5rem;
+  width: 0.6rem;
+}
+.site .etat-service::before {
+  background: var(--vert);
+}
+.site .etat-chantier::before {
+  border-color: var(--encre-pale);
+}
+
+/* ── Ticket de caisse ────────────────────────────────────────────────────── */
+.site .ticket {
+  background: #fffdf6;
+  box-shadow: 0 1px 0 rgba(20, 32, 27, 0.2), 0 18px 40px -22px rgba(20, 32, 27, 0.45);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  padding: 1.6rem 1.4rem 2.2rem;
+  position: relative;
+  transform: rotate(-1.2deg);
+}
+/* Bord déchiré du bas, en dents de scie. */
+.site .ticket::after {
+  background: linear-gradient(-45deg, var(--papier) 6px, transparent 0), linear-gradient(45deg, var(--papier) 6px, transparent 0);
+  background-position: left bottom;
+  background-repeat: repeat-x;
+  background-size: 12px 12px;
+  bottom: 0;
+  content: '';
+  height: 12px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+.site .ticket .ligne {
+  display: flex;
+  gap: 0.5rem;
+}
+.site .ticket .points {
+  border-bottom: 1px dotted var(--encre-pale);
+  flex: 1;
+  margin-bottom: 0.45em;
+}
+
+/* ── Ce qu'on ne fait pas ────────────────────────────────────────────────── */
+.site .raye {
+  text-decoration: line-through;
+  text-decoration-color: var(--vermillon);
+  text-decoration-thickness: 2px;
+}
+
+/* ── Entrée en scène : une seule, à l'ouverture ──────────────────────────── */
+@keyframes monte {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.site .monte {
+  animation: monte 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--rang, 0) * 90ms);
+}
+@keyframes trace {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.site .trace {
+  animation: trace 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--rang, 0) * 90ms);
+  transform-origin: left;
+}
+@media (prefers-reduced-motion: reduce) {
+  .site .monte,
+  .site .trace {
+    animation: none;
+  }
+}
+
+/* ── Logo et menu ────────────────────────────────────────────────────────── */
+/* Nom du logo : la police du texte, extra-grasse et resserrée. */
+.site .nom-logo {
+  font-family: var(--font-corps), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.site .signe {
+  flex-shrink: 0;
+}
+.site .lien-menu {
+  padding-bottom: 2px;
+}
+.site .lien-menu:hover,
+.site .lien-menu.actif {
+  background: linear-gradient(transparent 62%, var(--surligneur) 62%, var(--surligneur) 96%, transparent 96%);
+}
+
+/* ── Écrans du produit (maquettes) ───────────────────────────────────────── */
+/* Un écran de l'outil, posé sur la page comme une feuille : fond blanc cassé,
+   filet d'encre, ombre dure. Le texte y est plus petit que sur la page. */
+.site .ecran {
+  background: #fffdf8;
+  border: 1px solid var(--encre);
+  box-shadow: 8px 8px 0 var(--encre);
+  color: var(--encre);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  overflow: hidden;
+}
+.site .ecran-barre {
+  align-items: center;
+  border-bottom: 1px solid var(--filet);
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  padding: 0.6rem 0.9rem;
+}
+.site .ecran h4 {
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+.site .ecran .etiquette {
+  color: var(--encre-pale);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.site .ecran .nb {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+.site .ecran .ligne-t {
+  border-top: 1px solid var(--filet);
+}
+.site .pastille {
+  border-radius: 3px;
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.1rem 0.4rem;
+  white-space: nowrap;
+}
+.site .pastille.cite {
+  background: var(--surligneur);
+  box-shadow: inset 0 0 0 1px var(--encre);
+}
+.site .pastille.nomme {
+  background: #e3f3ec;
+  color: var(--vert);
+}
+.site .pastille.absent {
+  background: #f6e7e1;
+  color: var(--vermillon);
+}
+.site .pastille.neutre {
+  background: var(--papier);
+  color: var(--encre-douce);
+}
+.site .jauge {
+  background: var(--papier-fonce);
+  height: 6px;
+}
+.site .jauge > span {
+  background: var(--encre);
+  display: block;
+  height: 100%;
+}
+.site .jauge.vert > span {
+  background: var(--vert);
+}
+.site .jauge.jaune > span {
+  background: var(--surligneur);
+  box-shadow: inset 0 0 0 1px var(--encre);
+}
+.site .note-exemple {
+  color: var(--encre-pale);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  margin-top: 0.9rem;
+  text-transform: uppercase;
+}
+
+/* ══ Site à plusieurs pages (14/11/2026) : ajouts, sans rien changer au-dessus ══ */
+
+/* ── Accès au clavier ────────────────────────────────────────────────────── */
+.site a:focus-visible,
+.site button:focus-visible,
+.site [tabindex]:focus-visible {
+  outline: 2px solid var(--encre);
+  outline-offset: 3px;
+}
+.site .sombre a:focus-visible {
+  outline-color: var(--surligneur);
+}
+.site {
+  position: relative;
+}
+.site .evitement {
+  background: var(--encre);
+  color: var(--papier);
+  left: 1rem;
+  padding: 0.6rem 1rem;
+  position: absolute;
+  top: -4rem;
+  z-index: 10;
+}
+.site .evitement:focus {
+  top: 1rem;
+}
+
+/* ── Fonds de section ────────────────────────────────────────────────────── */
+.site .sombre {
+  background: var(--encre);
+  color: var(--papier);
+}
+.site .sombre .bouton {
+  background: var(--papier);
+  border-color: var(--papier);
+  color: var(--encre);
+}
+.site .sombre .bouton-creux {
+  background: transparent;
+  color: var(--papier);
+}
+.site .sombre .doux {
+  color: rgba(242, 238, 227, 0.74);
+}
+.site .teinte {
+  background: var(--papier-fonce);
+  border-block: 1px solid var(--encre);
+}
+
+/* ── Texte ───────────────────────────────────────────────────────────────── */
+.site .chapo {
+  color: var(--encre-douce);
+  font-size: 1.1875rem;
+  line-height: 1.55;
+}
+.site .doux {
+  color: var(--encre-douce);
+}
+.site .lien-fleche {
+  align-items: baseline;
+  border-bottom: 1px solid currentColor;
+  display: inline-flex;
+  font-weight: 600;
+  gap: 0.5rem;
+  padding-bottom: 2px;
+}
+.site .lien-fleche > span {
+  transition: transform 0.15s ease;
+}
+.site .lien-fleche:hover > span {
+  transform: translateX(4px);
+}
+/* Notes de marge : la méthode écrite à côté du titre. */
+.site .notes-marge li {
+  border-top: 1px solid var(--filet);
+  padding: 0.5rem 0;
+}
+.site .notes-marge li:last-child {
+  border-bottom: 1px solid var(--filet);
+}
+
+/* ── Tampon de méthode : « interface » ou « API » ────────────────────────── */
+.site .tampon {
+  border: 1px solid currentColor;
+  display: inline-block;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  line-height: 1.5;
+  padding: 0.1rem 0.45rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.site .tampon.interface {
+  background: var(--encre);
+  border-color: var(--encre);
+  color: var(--papier);
+}
+.site .tampon.api {
+  border-style: dashed;
+}
+
+/* ── La décision que permet une fonction ─────────────────────────────────── */
+.site .decision {
+  border-left: 3px solid var(--encre);
+  padding: 0.1rem 0 0.1rem 1.1rem;
+}
+.site .puces li {
+  border-top: 1px solid var(--filet);
+  padding: 0.6rem 0 0.6rem 1.4rem;
+  position: relative;
+}
+.site .puces li::before {
+  background: var(--encre);
+  content: '';
+  height: 1px;
+  left: 0;
+  position: absolute;
+  top: 1.35rem;
+  width: 0.8rem;
+}
+.site .sombre .puces li {
+  border-color: rgba(242, 238, 227, 0.22);
+}
+.site .sombre .puces li::before {
+  background: var(--surligneur);
+}
+
+/* ── Grands blocs liés (les quatre familles) ─────────────────────────────── */
+.site .porte {
+  border-top: 2px solid var(--encre);
+  display: block;
+}
+.site .porte:hover .porte-titre,
+.site .porte:focus-visible .porte-titre {
+  background: linear-gradient(transparent 62%, var(--surligneur) 62%, var(--surligneur) 94%, transparent 94%);
+}
+.site .porte:hover .lien-fleche > span {
+  transform: translateX(4px);
+}
+
+/* ── Tableaux de la page (pas ceux des écrans) ───────────────────────────── */
+.site .defile {
+  overflow-x: auto;
+}
+.site .matrice {
+  border-collapse: collapse;
+  min-width: 100%;
+}
+.site .matrice th,
+.site .matrice td {
+  border-top: 1px solid var(--filet);
+  padding: 0.7rem 0.9rem 0.7rem 0;
+  text-align: left;
+  vertical-align: top;
+}
+.site .matrice thead th {
+  border-top: 2px solid var(--encre);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.site .matrice tbody tr:last-child > * {
+  border-bottom: 1px solid var(--filet);
+}
+.site .matrice th[scope='row'] {
+  font-weight: 400;
+}
+.site .matrice .a-part {
+  border-left: 1px dashed var(--encre-pale);
+  padding-left: 0.9rem;
+}
+.site .oui,
+.site .non {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+.site .oui::before {
+  background: var(--surligneur);
+  box-shadow: inset 0 0 0 1px var(--encre);
+  content: '';
+  display: inline-block;
+  height: 0.6rem;
+  margin-right: 0.45rem;
+  width: 0.6rem;
+}
+.site .non {
+  color: var(--encre-pale);
+}
+/* Donnée que l'IA ne fournit pas, tirée de sa réponse par la lecture automatique. */
+.site .oui.lu::before {
+  background: linear-gradient(135deg, var(--surligneur) 50%, transparent 50%);
+}
+
+/* ── Figure : la marge d'erreur, dessinée ────────────────────────────────── */
+.site .echelle {
+  background-image: repeating-linear-gradient(90deg, var(--filet) 0 1px, transparent 1px 10%);
+  border-inline: 1px solid var(--filet);
+  height: 2.25rem;
+  position: relative;
+}
+.site .echelle .plage {
+  background: var(--surligneur);
+  box-shadow: inset 0 0 0 1px var(--encre);
+  height: 0.9rem;
+  position: absolute;
+  top: 0.675rem;
+}
+.site .echelle .point {
+  background: var(--encre);
+  height: 1.7rem;
+  position: absolute;
+  top: 0.275rem;
+  width: 2px;
+}
+
+/* ── Figure : le calendrier des relevés ──────────────────────────────────── */
+.site .calendrier {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 9.5rem) repeat(4, minmax(0, 1fr));
+}
+.site .calendrier > * > * {
+  border-top: 1px solid var(--filet);
+  padding: 0.65rem 0.5rem 0.65rem 0;
+}
+.site .calendrier .tete {
+  border-top: 2px solid var(--encre);
+}
+.site .calendrier .passage {
+  background: var(--encre);
+  display: block;
+  height: 0.7rem;
+  width: 0.7rem;
+}
+.site .calendrier .passage.api {
+  background: transparent;
+  border: 2px dashed var(--encre);
+}
+
+/* ── Écrans : compléments ────────────────────────────────────────────────── */
+/* Sur téléphone, l'étiquette de droite passe sous le titre de l'écran. */
+.site .ecran-barre {
+  flex-wrap: wrap;
+  row-gap: 0.2rem;
+}
+/* Sur téléphone, un écran trop large défile dans son cadre, jamais la page. */
+.site .ecran-corps {
+  overflow-x: auto;
+}
+.site .ecran .t4 {
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+.site .note-exemple {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+}
+.site .note-exemple .note-libre {
+  color: var(--encre-douce);
+  font-family: var(--font-corps), ui-sans-serif, sans-serif;
+  font-size: 0.8125rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.site .sombre .note-exemple,
+.site .sombre .note-exemple .note-libre {
+  color: rgba(242, 238, 227, 0.7);
+}
+.site .sombre .ecran {
+  box-shadow: 8px 8px 0 var(--surligneur);
+}
+/* Un trait par relevé, en petit, dans un écran. */
+.site .coches {
+  display: flex;
+  gap: 2px;
+}
+.site .coches span {
+  background: var(--papier-fonce);
+  flex: 1;
+  height: 0.9rem;
+  max-width: 0.5rem;
+}
+.site .coches span.la {
+  background: var(--surligneur);
+  box-shadow: inset 0 0 0 1px var(--encre);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site .bouton,
+  .site .lien-fleche > span {
+    transition: none;
+  }
+  .site .bouton:hover {
+    transform: none;
+  }
+  .site .lien-fleche:hover > span,
+  .site .porte:hover .lien-fleche > span {
+    transform: none;
+  }
+}
+
+/* ══ Accueil complété (18/11/2026) : le cycle en quatre étapes, les questions fréquentes ══ */
+.site .cycle {
+  border-top: 2px solid var(--encre);
+  counter-reset: etape;
+  display: grid;
+  gap: 0;
+}
+.site .cycle-etape {
+  border-bottom: 1px solid var(--filet);
+  padding: 1.75rem 0 2rem;
+  position: relative;
+}
+.site .cycle-numero {
+  background: linear-gradient(transparent 56%, var(--surligneur) 56%, var(--surligneur) 92%, transparent 92%);
+  display: inline-block;
+  font-size: 3.4rem;
+  line-height: 1;
+  padding: 0 0.12em;
+}
+@media (min-width: 768px) {
+  .site .cycle {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .site .cycle-etape {
+    padding: 1.75rem 2rem 2.25rem 0;
+  }
+  .site .cycle-etape:nth-child(2n) {
+    border-left: 1px solid var(--filet);
+    padding-left: 2rem;
+  }
+}
+@media (min-width: 1024px) {
+  .site .cycle {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .site .cycle-etape {
+    border-bottom: 0;
+  }
+  .site .cycle-etape + .cycle-etape {
+    border-left: 1px solid var(--filet);
+    padding-left: 2rem;
+  }
+  /* Une flèche entre deux étapes, posée sur le filet. */
+  .site .cycle-etape + .cycle-etape::before {
+    background: var(--papier);
+    content: '→';
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.9rem;
+    left: -0.55rem;
+    line-height: 1;
+    padding: 0.2rem 0;
+    position: absolute;
+    top: 2.6rem;
+  }
+}
+.site .faq-question {
+  border-top: 1px solid var(--filet);
+}
+.site .faq-question summary {
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  list-style: none;
+  padding: 1.1rem 2.5rem 1.1rem 0;
+  position: relative;
+}
+.site .faq-question summary::-webkit-details-marker {
+  display: none;
+}
+.site .faq-question summary::after {
+  content: '+';
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 1.1rem;
+  font-weight: 400;
+  position: absolute;
+  right: 0.25rem;
+  top: 1.05rem;
+}
+.site .faq-question[open] summary::after {
+  content: '−';
+}
+.site .faq-question summary:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.site .faq-question summary:focus-visible {
+  outline: 2px solid var(--encre);
+  outline-offset: 3px;
+}
+.site .cas-lien {
+  font-weight: 500;
+  line-height: 1.35;
+}
+.site .cas-lien:hover span:first-child {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.site .cas-lien:hover span:last-child {
+  transform: translateX(3px);
+}
+.site .cas-lien span:last-child {
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+/* ── Choix de la langue, avec les drapeaux (18/11/2026) ──────────────────── */
+/* L'affichage (inline-flex ou caché) vient des classes passées au composant. */
+.site .choix-langue {
+  align-items: stretch;
+  border: 1px solid var(--encre);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+.site .choix-langue .langue {
+  align-items: center;
+  color: var(--encre-douce);
+  display: inline-flex;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+}
+.site .choix-langue .langue + .langue {
+  border-left: 1px solid var(--encre);
+}
+.site .choix-langue .langue.actif {
+  background: var(--encre);
+  color: var(--papier);
+  font-weight: 700;
+}
+.site .choix-langue a.langue:hover {
+  background: var(--surligneur);
+  color: var(--encre);
+}
+.site .drapeau {
+  box-shadow: 0 0 0 1px rgba(20, 32, 27, 0.25);
+  flex-shrink: 0;
+}
+
+/* ══ Logiciel libre (25/11/2026) : le comparatif de prix, l'installation, les clés ══ */
+.site .comparatif {
+  border-collapse: collapse;
+  border-top: 2px solid var(--encre);
+  min-width: 34rem;
+  width: 100%;
+}
+.site .comparatif th,
+.site .comparatif td {
+  border-bottom: 1px solid var(--filet);
+  padding: 0.85rem 1rem 0.85rem 0;
+  text-align: left;
+  vertical-align: baseline;
+}
+.site .comparatif thead th {
+  border-bottom: 1px solid var(--encre);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.site .comparatif tbody th {
+  color: var(--encre-douce);
+  font-weight: 500;
+}
+.site .comparatif td {
+  color: var(--encre-douce);
+}
+.site .comparatif .montant {
+  font-family: var(--font-titre), Georgia, serif;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  line-height: 1.1;
+}
+/* La colonne de GeoTrends : fond clair, encre pleine. */
+.site .comparatif .nous {
+  background: color-mix(in srgb, var(--papier) 45%, #fff);
+  color: var(--encre);
+  font-weight: 600;
+  padding-left: 1rem;
+}
+.site .comparatif thead .nous {
+  border-top: 4px solid var(--surligneur);
+  font-weight: 700;
+}
+.site .comparatif td.montant:not(.nous) {
+  text-decoration: line-through;
+  text-decoration-color: var(--vermillon);
+  text-decoration-thickness: 2px;
+}
+.site .comparatif.cles tbody th {
+  color: var(--encre);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.site .comparatif.cles td:last-child {
+  padding-right: 0;
+  white-space: nowrap;
+}
+/* Une commande à taper, ou une adresse à ouvrir. */
+.site .commande {
+  background: var(--encre);
+  color: var(--papier);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  padding: 0.75rem 0.9rem;
+  white-space: pre-wrap;
+}
+.site .commande code::selection {
+  background: var(--surligneur);
+  color: var(--encre);
+}
+.site .icone-github {
+  flex: none;
+  height: 1.15em;
+  width: 1.15em;
+}
+@media (min-width: 1024px) {
+  .site .cycle.trois {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

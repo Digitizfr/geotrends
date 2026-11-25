@@ -1,0 +1,186 @@
+import type { PageDoc } from '../../types'
+
+// Écran /reglages (src/app/(app)/reglages/page.tsx et actions.ts, langue :
+// src/app/(app)/_actions/interface.ts).
+const page: PageDoc = {
+  id: 'piloter/reglages',
+  rubrique: 'piloter',
+  slug: { fr: 'piloter/reglages', en: 'steer/settings' },
+  titre: { fr: 'Réglages', en: 'Settings' },
+  resume: {
+    fr: 'Les réglages de tout l’outil : langue de l’interface, seuil de confirmation, rythme des relevés de chaque projet, état des connexions, votre mot de passe et les comptes de l’équipe.',
+    en: 'Tool-wide settings: interface language, confirmation threshold, each project’s run schedule, the state of provider connections, your password and the team’s accounts.',
+  },
+  ecrans: ['/reglages'],
+  maj: '2026-11-25',
+  contenu: {
+    fr: [
+      { type: 'p', texte: 'L’écran Réglages réunit ce qui vaut pour tout l’outil. Il sert à trois décisions : dans quelle langue travailler, à partir de quel montant un envoi demande une confirmation, et à quel rythme chaque projet est relevé tout seul. Il dit aussi si chaque fournisseur est bien branché. Les réglages propres à un écran se font sur cet écran.' },
+      { type: 'p', texte: 'La phrase du haut résume l’état : la langue de l’interface, le nombre de projets relevés automatiquement et leur coût estimé par mois, et le seuil de confirmation.' },
+      { type: 'capture', nom: 'reglages', legende: 'L’écran Réglages : la langue de l’interface, la confirmation avant un envoi, le rythme des relevés de chaque projet, puis les connexions aux fournisseurs.' },
+      { type: 'h2', id: 'langue', texte: 'Langue de l’interface' },
+      { type: 'p', texte: 'Deux choix, **Français** ou **English**. Le choix est propre à votre compte et retenu d’une session à l’autre, d’un appareil à l’autre. Il s’applique tout de suite à tous les écrans, aux dates, aux montants (`0,05 $` ou `$0.05`) et aux exports. Il ne change pas la langue des questions d’un projet, et le texte des réponses des IA n’est jamais traduit.' },
+      { type: 'h2', id: 'confirmation', texte: 'Confirmation avant un envoi' },
+      { type: 'p', texte: 'Le prix d’un relevé est toujours écrit sur son bouton. Au-dessus du seuil, une fenêtre demande en plus de confirmer : « Envoyer pour … ? », avec **Annuler** et **Confirmer l’envoi**. Le seuil vaut 1 $ par défaut ; le champ **Demander une confirmation au-dessus de (en dollars)** le change, de 0 à 1 000 $. Il vaut pour tous les comptes et pour tous les envois payants lancés à la main : le relevé d’un projet, le relevé d’une sélection de questions, la mesure approfondie.' },
+      { type: 'h2', id: 'rythme', texte: 'Rythme des relevés' },
+      { type: 'p', texte: 'Une ligne par projet, avec deux cases, puis **Enregistrer**. Ce sont les mêmes cases que dans l’onglet Relevés de la fiche du projet : les changer ici ou là revient au même. Rien n’est activé par défaut.' },
+      {
+        type: 'tableau',
+        colonnes: ['Case', 'Ce qu’elle fait', 'Coût estimé par mois'],
+        lignes: [
+          ['**Chaque semaine** (interface)', 'Pose chaque semaine toutes les questions du projet à ChatGPT, Gemini, au Mode IA et aux Aperçus IA de Google.', 'Questions × 4 IA × (prix d’un relevé d’interface + lecture de la réponse) × 4,33 semaines.'],
+          ['**Toutes les deux semaines** (API)', 'Pose les questions à Claude, par son API, une semaine sur deux.', 'Questions × (prix moyen d’une question à Claude + lecture) × 2,17 passages.'],
+        ],
+      },
+      { type: 'p', texte: 'Quand une case est cochée, la ligne dit quand part le prochain envoi : « dans la demi-heure », ou à une date. Sous la liste, le total estimé de tous les projets est comparé au plafond du mois ; un administrateur a le lien **Changer le plafond**. Les relevés automatiques se suspendent d’eux-mêmes quand le plafond est atteint. Le détail est dans [Relevés automatiques](doc:projet/releves-automatiques).' },
+      { type: 'h2', id: 'connexions', texte: 'Clés des fournisseurs' },
+      {
+        type: 'tableau',
+        colonnes: ['Fournisseur', 'À quoi il sert'],
+        lignes: [
+          ['DataForSEO', 'Relevés d’interface : ChatGPT, Gemini, Mode IA et Aperçus IA de Google. Payant. La seule clé indispensable.'],
+          ['DeepSeek', 'Le petit modèle : lecture des réponses, étiquettes des questions, types de sites, faits vérifiés. Payant, conseillé.'],
+          ['Anthropic', 'Relevés de Claude par son API, et petit modèle quand il n’y a pas de clé DeepSeek. Payant.'],
+          ['YouTube', 'Fiche des vidéos citées et reconnaissance des chaînes. Gratuit.'],
+          ['Resend', 'Envoi du rapport du lundi par e-mail. Gratuit, à activer sur l’écran Rapport.'],
+        ],
+      },
+      { type: 'p', texte: 'Chaque ligne dit **Clé en place** ou **Clé absente** ; les clés elles-mêmes ne sont jamais affichées. Elles s’écrivent dans le fichier `.env` de l’installation, pas dans cet écran : une ligne sans clé rappelle le nom à y mettre, et il faut relancer l’outil après un changement. Pour un fournisseur payant, la ligne donne aussi la date du dernier appel réussi : c’est elle qui prouve que la clé fonctionne. Les appels gratuits ne sont pas inscrits au journal des coûts. Où trouver chaque clé : [Installer GeoTrends](doc:demarrer/installer#cles).' },
+      { type: 'h2', id: 'comptes', texte: 'Comptes' },
+      { type: 'h2', id: 'mot-de-passe', texte: 'Mon mot de passe' },
+      { type: 'p', texte: 'Chaque compte peut changer son mot de passe : **Mot de passe actuel**, **Nouveau mot de passe** (huit caractères au moins), **Le même, une seconde fois**, puis **Changer le mot de passe**. Vos autres sessions ouvertes (un autre navigateur, un téléphone) sont fermées. En cas d’oubli, demandez un nouveau lien à l’administrateur.' },
+      { type: 'capture', nom: 'reglages-comptes', legende: 'Le bloc Comptes, pour un administrateur : inviter une personne, puis une ligne par compte avec son état, son rôle et ses boutons.' },
+      { type: 'p', texte: 'Pour un administrateur, le dernier bloc gère les comptes de l’outil. En haut, **Inviter** : le nom, l’adresse e-mail et le rôle (**Membre** ou **Administrateur**). Le compte est créé et un lien personnel s’affiche, avec **Écrire l’e-mail** (votre messagerie s’ouvre avec le message prêt), **Copier le lien** et **Copier le texte de l’e-mail**. Le lien vaut sept jours, une seule fois, et ne se réaffiche pas.' },
+      {
+        type: 'tableau',
+        colonnes: ['État affiché', 'Ce qu’il veut dire'],
+        lignes: [
+          ['« Invitation en cours, mot de passe pas encore choisi »', 'Le lien a été créé, la personne ne l’a pas encore ouvert. La date dit jusqu’à quand il vaut.'],
+          ['« Mot de passe pas encore choisi, lien expiré »', 'Sept jours ont passé : **Nouveau lien d’invitation** en refait un.'],
+          ['« Lien de nouveau mot de passe en cours »', 'Un lien a été refait pour quelqu’un qui avait déjà un mot de passe (oubli).'],
+          ['« Dernière connexion : … »', 'La personne est entrée ; la date est celle de sa dernière connexion.'],
+        ],
+      },
+      { type: 'p', texte: 'Sur chaque ligne, **Lien de nouveau mot de passe** (ou **Nouveau lien d’invitation**) refait un lien et rend le précédent inutilisable ; **Retirer l’accès**, confirmé par **Oui, retirer**, supprime le compte et ferme ses sessions. Voir [Comptes et connexion](doc:piloter/comptes).' },
+      { type: 'h2', id: 'ailleurs', texte: 'Où sont les autres réglages' },
+      {
+        type: 'tableau',
+        colonnes: ['Réglage', 'Où il se trouve'],
+        lignes: [
+          ['Plafond de dépense du mois', 'Administration › Coûts (administrateurs).'],
+          ['Nom du projet, pays et langue, archivage', 'Fiche du projet, onglet **Réglages du projet**.'],
+          ['Classement automatique des nouveaux sites', 'Écran Sources.'],
+          ['Étiquetage automatique des questions ajoutées', 'Écran Questions.'],
+          ['Faits vérifiés', 'Écran Faits vérifiés.'],
+          ['Envoi du rapport du lundi', 'Écran Rapport.'],
+        ],
+      },
+      { type: 'h2', id: 'pas-a-pas', texte: 'Mettre un projet en relevés automatiques' },
+      {
+        type: 'etapes',
+        items: [
+          { titre: 'Vérifier les connexions', texte: 'DataForSEO doit avoir sa clé en place, et Anthropic aussi si Claude doit être relevé.' },
+          { titre: 'Cocher le rythme', texte: 'Sur la ligne du projet, cochez **Chaque semaine**, et **Toutes les deux semaines** pour Claude si besoin, puis **Enregistrer**. Le premier envoi part dans la demi-heure.' },
+          { titre: 'Comparer au plafond', texte: 'Lisez le total estimé sous la liste. S’il dépasse le plafond du mois, les derniers relevés du mois ne partiront pas.' },
+          { titre: 'Régler le seuil de confirmation', texte: 'Il ne concerne que les envois lancés à la main ; les relevés automatiques partent sans fenêtre de confirmation.' },
+        ],
+      },
+      { type: 'h2', id: 'limites', texte: 'Limites' },
+      { type: 'encadre', ton: 'limite', texte: 'Les coûts mensuels sont des estimations : le prix de Claude est la moyenne de ses trente derniers relevés, et la lecture des réponses est comptée au prix moyen. Une clé « en place » n’est pas forcément valable : seule la date du dernier appel réussi le montre. Les clés se changent sur le serveur, pas depuis cet écran.' },
+      {
+        type: 'liens',
+        items: [
+          { page: 'projet/releves-automatiques' },
+          { page: 'piloter/couts' },
+          { page: 'piloter/comptes' },
+          { page: 'reference/pays-et-langues' },
+        ],
+      },
+    ],
+    en: [
+      { type: 'p', texte: 'The Settings screen gathers what applies to the whole tool. It supports three decisions: which language to work in, from what amount a request asks for confirmation, and how often each project is recorded on its own. It also tells whether each provider is properly connected. Settings specific to a screen are on that screen.' },
+      { type: 'p', texte: 'The headline sums up the state: the interface language, the number of projects recorded automatically and their estimated monthly cost, and the confirmation threshold.' },
+      { type: 'capture', nom: 'reglages', legende: 'The Settings screen: interface language, confirmation before sending, each project’s run schedule, then the provider connections.' },
+      { type: 'h2', id: 'language', texte: 'Interface language' },
+      { type: 'p', texte: 'Two choices, **Français** or **English**. The choice belongs to your account and is remembered across sessions and devices. It applies at once to every screen, to dates, amounts (`$0.05` or `0,05 $`) and exports. It does not change the language of a project’s prompts, and AI answers are never translated.' },
+      { type: 'h2', id: 'confirmation', texte: 'Confirmation before sending' },
+      { type: 'p', texte: 'The price of a run is always written on its button. Above the threshold, a dialog also asks you to confirm: “Send for …?”, with **Cancel** and **Confirm sending**. The threshold is $1 by default; the **Ask for confirmation above (in dollars)** field changes it, from $0 to $1,000. It applies to every account and to every paid request started by hand: a project run, a run for a selection of prompts, a deep measurement.' },
+      { type: 'h2', id: 'schedule', texte: 'Run schedule' },
+      { type: 'p', texte: 'One row per project, with two boxes, then **Save**. They are the same boxes as in the Runs tab of the project page: changing them here or there amounts to the same. Nothing is on by default.' },
+      {
+        type: 'tableau',
+        colonnes: ['Box', 'What it does', 'Estimated monthly cost'],
+        lignes: [
+          ['**Every week** (interface)', 'Asks all the project’s prompts every week to ChatGPT, Gemini, Google AI Mode and AI Overviews.', 'Prompts × 4 AIs × (price of an interface reading + reading the answer) × 4.33 weeks.'],
+          ['**Every two weeks** (API)', 'Asks the prompts to Claude, through its API, every other week.', 'Prompts × (average price of a prompt to Claude + reading) × 2.17 passes.'],
+        ],
+      },
+      { type: 'p', texte: 'When a box is ticked, the row says when the next run goes out: “within half an hour”, or on a date. Under the list, the estimated total for all projects is compared with the monthly cap; an admin gets the **Change the cap** link. Automatic runs pause on their own once the cap is reached. Details are in [Automatic runs](doc:projet/releves-automatiques).' },
+      { type: 'h2', id: 'connections', texte: 'Provider keys' },
+      {
+        type: 'tableau',
+        colonnes: ['Provider', 'What it is for'],
+        lignes: [
+          ['DataForSEO', 'Interface readings: ChatGPT, Gemini, Google AI Mode and AI Overviews. Paid. The only key you cannot do without.'],
+          ['DeepSeek', 'The small model: reading answers, prompt tags, site types, fact checks. Paid, recommended.'],
+          ['Anthropic', 'Claude readings through its API, and the small model when there is no DeepSeek key. Paid.'],
+          ['YouTube', 'Details of cited videos and channel recognition. Free.'],
+          ['Resend', 'Sending the Monday report by e-mail. Free, turned on from the Report screen.'],
+        ],
+      },
+      { type: 'p', texte: 'Each row says **Key in place** or **Key missing**; the keys themselves are never displayed. They go in the installation’s `.env` file, not on this screen: a row with no key reminds you of the name to put there, and the tool must be restarted after a change. For a paid provider, the row also gives the date of the last successful call: that is what proves the key works. Free calls are not logged in the cost journal. Where to get each key: [Install GeoTrends](doc:demarrer/installer#keys).' },
+      { type: 'h2', id: 'accounts', texte: 'Accounts' },
+      { type: 'h2', id: 'my-password', texte: 'My password' },
+      { type: 'p', texte: 'Every account can change its password: **Current password**, **New password** (at least eight characters), **Same again**, then **Change password**. Your other open sessions (another browser, a phone) are signed out. If you forget it, ask the administrator for a new link.' },
+      { type: 'capture', nom: 'reglages-comptes', legende: 'The Accounts block, for an admin: invite a person, then one line per account with its state, its role and its buttons.' },
+      { type: 'p', texte: 'For an admin, the last block manages the tool’s accounts. At the top, **Invite**: name, e-mail address and role (**Member** or **Admin**). The account is created and a personal link appears, with **Write the e-mail** (your mail app opens with the message ready), **Copy the link** and **Copy the e-mail text**. The link works for seven days, only once, and is not shown again.' },
+      {
+        type: 'tableau',
+        colonnes: ['State shown', 'What it means'],
+        lignes: [
+          ['“Invitation pending, password not chosen yet”', 'The link was created, the person has not opened it yet. The date says until when it works.'],
+          ['“Password not chosen yet, link expired”', 'Seven days have passed: **New invitation link** makes another one.'],
+          ['“New-password link pending”', 'A link was made again for someone who already had a password (forgotten).'],
+          ['“Last sign-in: …”', 'The person got in; the date is their last sign-in.'],
+        ],
+      },
+      { type: 'p', texte: 'On each line, **New-password link** (or **New invitation link**) makes a new link and voids the previous one; **Remove access**, confirmed with **Yes, remove**, deletes the account and signs out its sessions. See [Accounts and sign-in](doc:piloter/comptes).' },
+      { type: 'h2', id: 'elsewhere', texte: 'Where the other settings are' },
+      {
+        type: 'tableau',
+        colonnes: ['Setting', 'Where it is'],
+        lignes: [
+          ['Monthly spending cap', 'Admin › Costs (admins).'],
+          ['Project name, country and language, archiving', 'Project page, **Project settings** tab.'],
+          ['Automatic classification of new sites', 'Sources screen.'],
+          ['Automatic tagging of added prompts', 'Prompts screen.'],
+          ['Fact checks', 'Fact checks screen.'],
+          ['Monday report sending', 'Report screen.'],
+        ],
+      },
+      { type: 'h2', id: 'step-by-step', texte: 'Putting a project on automatic runs' },
+      {
+        type: 'etapes',
+        items: [
+          { titre: 'Check the connections', texte: 'DataForSEO must have its key in place, and Anthropic too if Claude is to be recorded.' },
+          { titre: 'Tick the schedule', texte: 'On the project’s row, tick **Every week**, and **Every two weeks** for Claude if needed, then **Save**. The first run goes out within half an hour.' },
+          { titre: 'Compare with the cap', texte: 'Read the estimated total under the list. If it exceeds the monthly cap, the month’s last runs will not go out.' },
+          { titre: 'Set the confirmation threshold', texte: 'It only concerns requests started by hand; automatic runs go out without a confirmation dialog.' },
+        ],
+      },
+      { type: 'h2', id: 'limits', texte: 'Limits' },
+      { type: 'encadre', ton: 'limite', texte: 'Monthly costs are estimates: Claude’s price is the average of its last thirty readings, and answer reading is counted at its average price. A key “in place” is not necessarily valid: only the date of the last successful call shows it. Keys are changed on the server, not from this screen.' },
+      {
+        type: 'liens',
+        items: [
+          { page: 'projet/releves-automatiques' },
+          { page: 'piloter/couts' },
+          { page: 'piloter/comptes' },
+          { page: 'reference/pays-et-langues' },
+        ],
+      },
+    ],
+  },
+}
+
+export default page

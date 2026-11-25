@@ -1,0 +1,21 @@
+# Jamais dans l'image : dépendances (réinstallées), builds, secrets, documents.
+node_modules
+.next
+.git
+.claude
+.gstack
+.env
+.env.*
+!.env.example
+# Fichiers de clés locaux (hors dépôt, mais ceinture et bretelles).
+*.key.txt
+*-token.txt
+*-api-key.txt
+# Client Prisma : régénéré pendant le build.
+src/generated
+tsconfig.tsbuildinfo
+# Inutile à l'exécution.
+docs
+/*.md
+notes-internes
+docker-compose.override.yml

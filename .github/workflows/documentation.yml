@@ -1,0 +1,26 @@
+# À chaque envoi : la documentation du site est complète, et sa copie Markdown
+# (docs/fr, docs/en) dit exactement la même chose.
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: La documentation décrit chaque écran, dans les deux langues
+        run: npx tsx scripts/verifier-docs.ts
+      - name: La copie Markdown de docs/ est à jour
+        run: npx tsx scripts/exporter-docs.ts --verifier

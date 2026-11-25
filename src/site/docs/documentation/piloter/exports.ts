@@ -1,0 +1,206 @@
+import type { PageDoc } from '../../types'
+
+// Exports CSV : src/app/api/export/[quoi]/route.ts (questions, sources, actions,
+// appels) et le bouton CSV des graphiques (src/components/graphiques/GrapheLignes.tsx).
+// Pas un écran : la page n'a pas de champ `ecrans`.
+const page: PageDoc = {
+  id: 'piloter/exports',
+  rubrique: 'piloter',
+  slug: { fr: 'piloter/exports', en: 'steer/exports' },
+  titre: { fr: 'Exports CSV', en: 'CSV exports' },
+  resume: {
+    fr: 'Quatre exports CSV gratuits : les réponses relevées, les sources citées, la liste de travail et le journal des coûts, plus les données de chaque graphique.',
+    en: 'Four free CSV exports: the recorded answers, the cited sources, the work list and the cost journal, plus the data behind each chart, in the interface language.',
+  },
+  maj: '2026-11-18',
+  contenu: {
+    fr: [
+      { type: 'p', texte: 'Un export sert à reprendre les données dans un tableur : faire un tableau croisé, envoyer une liste à un rédacteur, garder une trace. Tout vient de la base : un export est gratuit et ne lance aucun appel. Il porte sur le projet affiché, sauf le journal des coûts, qui couvre tous les projets.' },
+      { type: 'h2', id: 'ou-les-trouver', texte: 'Où les trouver' },
+      {
+        type: 'tableau',
+        colonnes: ['Écran', 'Bouton', 'Ce qui est exporté'],
+        lignes: [
+          ['Vue d’ensemble, Questions', '**Exporter**', 'Les réponses relevées du projet, une ligne par relevé.'],
+          ['Sources', '**Exporter**', 'Les sources de toutes les réponses, une ligne par source.'],
+          ['Actions', '**Exporter**', 'La liste de travail, une ligne par action.'],
+          ['Administration › Coûts', '**Exporter**', 'Le journal des coûts entier, tous projets. Réservé aux administrateurs.'],
+          ['Graphiques de la vue d’ensemble, des concurrents et de la page d’une question', '**CSV**', 'Les données du graphique, telles qu’il les affiche.'],
+        ],
+      },
+      { type: 'encadre', ton: 'savoir', titre: 'Les filtres ne s’appliquent pas', texte: 'Les quatre exports prennent tout l’historique du projet, toutes les IA, y compris les questions archivées et les mesures approfondies, sans tenir compte de la période ni des IA choisies dans la barre du haut. Seul le bouton **CSV** d’un graphique suit ce que le graphique montre.' },
+      { type: 'h2', id: 'reponses', texte: 'Les réponses relevées' },
+      {
+        type: 'tableau',
+        colonnes: ['Colonne', 'Contenu'],
+        lignes: [
+          ['Question, Thème, Intention', 'Le texte de la question et ses étiquettes (intention écrite en code court : informer, comparer, acheter).'],
+          ['IA, Méthode', 'L’IA en code court (chatgpt, gemini, google_ai_mode, google_ai_overview, claude) et la méthode (interface ou api).'],
+          ['Envoyé le, Relevé le', 'La date d’envoi et la date du relevé, en temps universel (UTC).'],
+          ['Statut', 'recu, vide (pas de réponse ni d’aperçu), en_attente ou echec.'],
+          ['Mesure approfondie', 'oui pour un relevé de mesure approfondie.'],
+          ['Modèle', 'Le modèle qui a répondu, quand l’IA le donne.'],
+          ['Site cité, Vidéo citée, Nom dans le texte', 'oui ou non, pour une réponse reçue : une page du site (ou d’un profil social déclaré), une vidéo d’une chaîne de la marque, le nom de la marque dans le texte.'],
+          ['Sources citées', 'Le nombre de sources citées.'],
+          ['Marques nommées (dans l’ordre)', 'Les marques relevées par la lecture automatique, dans leur ordre d’apparition.'],
+          ['Prix ($)', 'Le prix de ce relevé.'],
+        ],
+      },
+      { type: 'h2', id: 'sources', texte: 'Les sources' },
+      {
+        type: 'tableau',
+        colonnes: ['Colonne', 'Contenu'],
+        lignes: [
+          ['Question, IA, Méthode, Relevé le', 'La réponse d’où vient la source.'],
+          ['Rôle', 'citée, ou lue sans être citée.'],
+          ['Rang', 'La place de la source dans la liste de la réponse.'],
+          ['Domaine, Adresse, Titre', 'Le site, l’adresse complète de la page et son titre.'],
+          ['Chaîne YouTube', 'Pour une vidéo, la chaîne qui l’a publiée.'],
+          ['Type du site, Marque propriétaire', 'Le type gardé en base (comparatif, média, blog…), « à classer » s’il ne l’est pas encore, et la marque d’un site de marque.'],
+          ['À qui', 'à nous, concurrent suivi, autre marque ou tiers.'],
+        ],
+      },
+      { type: 'h2', id: 'actions', texte: 'La liste de travail' },
+      {
+        type: 'tableau',
+        colonnes: ['Colonne', 'Contenu'],
+        lignes: [
+          ['Famille', 'En code court : reformuler, apparaitre, video, referencement, fait.'],
+          ['Action, Détail', 'Le titre de la ligne et son explication.'],
+          ['Page visée, Type du site', 'La page à ouvrir, et le type du site pour une page où apparaître.'],
+          ['Poids (1 à 5)', 'Le poids de la ligne, tiré du nombre de réponses et d’IA concernées.'],
+          ['État, Faite le, Note', 'L’état en code court (a_faire, en_cours, fait, ecarte), la date où l’action est passée à « fait », et votre note.'],
+          ['Questions à l’appui', 'Les questions qui servent de preuve, séparées par « | ».'],
+        ],
+      },
+      { type: 'h2', id: 'appels', texte: 'Le journal des coûts' },
+      { type: 'p', texte: 'Une ligne par appel payant, le plus récent d’abord : **Date (UTC)**, **Fournisseur**, **Type d’appel**, **IA**, **Projet**, **Volume** et **Unité** (`appel`, ou `jeton` pour un appel compté en jetons), **Prix ($)** à six décimales, **Origine du prix** (renvoyé par le fournisseur, ou calculé depuis la grille), **Réussi**, **Durée (ms)**, **Modèle** et **Erreur**. L’export est réservé aux administrateurs.' },
+      { type: 'h2', id: 'graphiques', texte: 'Les données d’un graphique' },
+      { type: 'p', texte: 'Le bouton **CSV** d’un graphique télécharge une ligne par point : **Date du relevé** (ou **Semaine du**, si le graphique est réglé par semaine), puis, pour chaque courbe affichée, la valeur, le compte qui la fonde (réponses avec la marque, ou somme des rangs) et la taille de l’échantillon. Une courbe masquée dans la légende n’est pas exportée.' },
+      { type: 'h2', id: 'format', texte: 'Le format des fichiers' },
+      {
+        type: 'liste',
+        items: [
+          'Les fichiers suivent la langue de l’interface. En français : point-virgule entre les colonnes et virgule décimale, pour qu’ils s’ouvrent tels quels dans un tableur en français. En anglais : virgule et point décimal.',
+          'Les en-têtes et les valeurs fixes (oui ou non, types de sites, appartenance) sont traduits. Le texte des questions et des réponses ne l’est jamais.',
+          'Les fichiers sont en UTF-8, avec la marque qui fait reconnaître les accents aux tableurs. Leur nom donne le projet, l’export et la date : `geotrends-facturo-questions-2026-11-18.csv`.',
+        ],
+      },
+      { type: 'h2', id: 'pas-a-pas', texte: 'Ouvrir un export dans un tableur' },
+      {
+        type: 'etapes',
+        items: [
+          { titre: 'Choisir la langue de l’interface', texte: 'Si votre tableur est en anglais, passez l’interface en anglais dans Réglages avant d’exporter : le séparateur suivra.' },
+          { titre: 'Exporter', texte: 'Cliquez sur **Exporter** dans la barre du haut de l’écran voulu. Le fichier se télécharge aussitôt.' },
+          { titre: 'Séparer les méthodes', texte: 'Filtrez d’abord la colonne **Méthode** : un total qui mélange interface et api ne mesure plus rien.' },
+        ],
+      },
+      { type: 'h2', id: 'limites', texte: 'Limites' },
+      { type: 'encadre', ton: 'limite', texte: 'Les codes courts (IA, statut, famille, état) ne sont pas traduits, et les dates des exports sont en temps universel, une ou deux heures avant l’heure de Paris. Un export ne recalcule ni visibilité ni marge d’erreur : il donne les relevés bruts, et un pourcentage calculé dans un tableur sur quelques réponses reste fragile.' },
+      {
+        type: 'liens',
+        items: [
+          { page: 'piloter/couts' },
+          { page: 'mesurer/questions' },
+          { page: 'comprendre/sources' },
+          { page: 'agir/liste-de-travail' },
+        ],
+      },
+    ],
+    en: [
+      { type: 'p', texte: 'An export takes the data into a spreadsheet: build a pivot table, send a list to a writer, keep a record. Everything comes from the database: an export is free and makes no call. It covers the project currently shown, except the cost journal, which covers every project.' },
+      { type: 'h2', id: 'where-to-find-them', texte: 'Where to find them' },
+      {
+        type: 'tableau',
+        colonnes: ['Screen', 'Button', 'What is exported'],
+        lignes: [
+          ['Overview, Prompts', '**Export**', 'The project’s recorded answers, one line per reading.'],
+          ['Sources', '**Export**', 'The sources of every answer, one line per source.'],
+          ['Actions', '**Export**', 'The work list, one line per action.'],
+          ['Admin › Costs', '**Export**', 'The whole cost journal, all projects. Admins only.'],
+          ['Charts on the overview, competitors and prompt pages', '**CSV**', 'The chart’s data, as the chart displays it.'],
+        ],
+      },
+      { type: 'encadre', ton: 'savoir', titre: 'Filters do not apply', texte: 'The four exports take the project’s whole history, every AI, archived prompts and deep measurements included, regardless of the period and AIs chosen in the top bar. Only a chart’s **CSV** button follows what the chart shows.' },
+      { type: 'h2', id: 'answers', texte: 'Recorded answers' },
+      {
+        type: 'tableau',
+        colonnes: ['Column', 'Content'],
+        lignes: [
+          ['Prompt, Topic, Intent', 'The prompt’s text and its tags (intent written as a short code: informer, comparer, acheter).'],
+          ['AI, Method', 'The AI as a short code (chatgpt, gemini, google_ai_mode, google_ai_overview, claude) and the method (interface or api).'],
+          ['Sent, Captured', 'The sending date and the reading date, in universal time (UTC).'],
+          ['Status', 'recu, vide (no answer or no overview), en_attente or echec.'],
+          ['Deep measurement', 'yes for a deep-measurement reading.'],
+          ['Model', 'The model that answered, when the AI provides it.'],
+          ['Site cited, Video cited, Name in the text', 'yes or no, for a received answer: a page of the site (or of a declared social profile), a video from one of the brand’s channels, the brand’s name in the text.'],
+          ['Cited sources', 'The number of cited sources.'],
+          ['Brands mentioned (in order)', 'The brands found by automatic reading, in their order of appearance.'],
+          ['Price ($)', 'The price of that reading.'],
+        ],
+      },
+      { type: 'h2', id: 'sources', texte: 'Sources' },
+      {
+        type: 'tableau',
+        colonnes: ['Column', 'Content'],
+        lignes: [
+          ['Prompt, AI, Method, Captured', 'The answer the source comes from.'],
+          ['Role', 'cited, or read, not cited.'],
+          ['Rank', 'The source’s position in the answer’s list.'],
+          ['Domain, Address, Title', 'The site, the page’s full address and its title.'],
+          ['YouTube channel', 'For a video, the channel that published it.'],
+          ['Site type, Owning brand', 'The type stored in the database (comparison site, media, blog…), “unclassified” if not classified yet, and the brand behind a brand site.'],
+          ['Owner', 'ours, tracked competitor, other brand or third party.'],
+        ],
+      },
+      { type: 'h2', id: 'actions', texte: 'The work list' },
+      {
+        type: 'tableau',
+        colonnes: ['Column', 'Content'],
+        lignes: [
+          ['Family', 'As a short code: reformuler, apparaitre, video, referencement, fait.'],
+          ['Action, Detail', 'The line’s title and its explanation.'],
+          ['Target page, Site type', 'The page to open, and the site type for a page to appear on.'],
+          ['Weight (1 to 5)', 'The line’s weight, drawn from the number of answers and AIs concerned.'],
+          ['Status, Done on, Note', 'The status as a short code (a_faire, en_cours, fait, ecarte), the date the action was marked done, and your note.'],
+          ['Supporting prompts', 'The prompts used as evidence, separated by “|”.'],
+        ],
+      },
+      { type: 'h2', id: 'calls', texte: 'The cost journal' },
+      { type: 'p', texte: 'One line per paid call, most recent first: **Date (UTC)**, **Provider**, **Call type**, **AI**, **Project**, **Volume** and **Unit** (`appel` for a call, or `jeton` for a call counted in tokens), **Price ($)** to six decimals, **Price source** (returned by the provider, or computed from the rate card), **Success**, **Duration (ms)**, **Model** and **Error**. The export is for admins only.' },
+      { type: 'h2', id: 'charts', texte: 'A chart’s data' },
+      { type: 'p', texte: 'A chart’s **CSV** button downloads one line per point: **Run date** (or **Week of**, when the chart is set per week), then, for each line displayed, the value, the count behind it (answers with the brand, or sum of positions) and the sample size. A line hidden in the legend is not exported.' },
+      { type: 'h2', id: 'format', texte: 'File format' },
+      {
+        type: 'liste',
+        items: [
+          'Files follow the interface language. In English: comma between columns and a decimal point. In French: semicolon and a decimal comma, so that they open as they are in a French spreadsheet.',
+          'Headers and fixed values (yes or no, site types, ownership) are translated. The text of prompts and answers never is.',
+          'Files are UTF-8, with the marker that makes spreadsheets read accents correctly. Their name gives the project, the export and the date: `geotrends-facturo-uk-questions-2026-11-18.csv`.',
+        ],
+      },
+      { type: 'h2', id: 'step-by-step', texte: 'Opening an export in a spreadsheet' },
+      {
+        type: 'etapes',
+        items: [
+          { titre: 'Pick the interface language', texte: 'If your spreadsheet is in French, switch the interface to French in Settings before exporting: the separator will follow.' },
+          { titre: 'Export', texte: 'Click **Export** in the top bar of the screen you want. The file downloads at once.' },
+          { titre: 'Keep the methods apart', texte: 'Filter the **Method** column first: a total that mixes interface and api no longer measures anything.' },
+        ],
+      },
+      { type: 'h2', id: 'limits', texte: 'Limits' },
+      { type: 'encadre', ton: 'limite', texte: 'Short codes (AI, status, family, state) are not translated, and export dates are in universal time, one or two hours behind Paris time. An export does not recompute visibility or the margin of error: it gives the raw readings, and a percentage computed in a spreadsheet on a few answers remains fragile.' },
+      {
+        type: 'liens',
+        items: [
+          { page: 'piloter/couts' },
+          { page: 'mesurer/questions' },
+          { page: 'comprendre/sources' },
+          { page: 'agir/liste-de-travail' },
+        ],
+      },
+    ],
+  },
+}
+
+export default page

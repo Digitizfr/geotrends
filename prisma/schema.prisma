@@ -1,0 +1,511 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── Journal des coûts ───────────────────────────────────────────────────────
+// Une ligne par appel à une API payante. C'est la seule source du tableau de
+// bord des coûts : aucun appel facturé ne doit partir sans passer par
+// `enregistrerAppel` (src/lib/couts.ts).
+model ApiCall {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  // Qui facture : "dataforseo", "anthropic", "deepseek"…
+  fournisseur String
+  // Ce qu'on a demandé : "releve", "analyse", "suggestion"…
+  operation   String
+  // IA concernée quand l'appel est un relevé : "chatgpt", "gemini",
+  // "google_ai_mode", "google_ai_overview", "claude"… (null sinon).
+  moteur      String?
+  // Projet au nom duquel l'appel est parti (texte libre tant que la table des
+  // projets n'existe pas ; deviendra une relation à l'étape 5).
+  projet      String?
+  // Volume facturé, dans l'unité du fournisseur (tâches, jetons…).
+  unites      Int      @default(1)
+  unite       String   @default("appel")
+  // Prix en dollars US, la devise de facturation de tous les fournisseurs.
+  // 6 décimales : un relevé coûte de l'ordre de 0,0012 $.
+  coutUsd     Decimal  @db.Decimal(12, 6)
+  // D'où vient le prix : "api" (renvoyé par le fournisseur) ou "grille"
+  // (calculé depuis src/lib/tarifs.ts).
+  sourcePrix  String   @default("grille")
+  reussi      Boolean  @default(true)
+  dureeMs     Int?
+  // Détail libre pour le débogage (identifiant de tâche, modèle, erreur).
+  detail      Json?
+
+  @@index([createdAt])
+  @@index([fournisseur, createdAt])
+  @@index([projet, createdAt])
+}
+
+// Réglages de l'outil, en clé/valeur (ex. plafond mensuel de dépense).
+model Reglage {
+  cle       String   @id
+  valeur    String
+  updatedAt DateTime @updatedAt
+}
+
+// ── Projets ─────────────────────────────────────────────────────────────────
+// Un projet = une marque suivie : son nom, ses propriétés (sites, chaînes
+// YouTube), ses concurrents et ses questions. Le nom du projet sert aussi
+// d'étiquette dans le journal des coûts (ApiCall.projet).
+model Projet {
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  nom         String       @unique
+  // Nom de la marque tel qu'il est cherché dans le texte des réponses.
+  marque      String
+  // Langue et pays par défaut des questions du projet.
+  langue      String
+  pays        String
+  archive     Boolean      @default(false)
+  // Relevés automatiques, activés par l'utilisateur dans la page du projet :
+  // chaque semaine pour les IA relevées par l'interface, toutes les deux
+  // semaines pour Claude. Désactivés par défaut : rien ne part sans accord.
+  releveAuto           Boolean   @default(false)
+  claudeAuto           Boolean   @default(false)
+  dernierAutoInterface DateTime?
+  dernierAutoClaude    DateTime?
+  proprietes  Propriete[]
+  concurrents Concurrent[]
+  questions   Question[]
+  etatsActions EtatAction[]
+  demarches   Demarche[]
+  faits       Fait[]
+  partages    Partage[]
+  pages       PageSuivie[]
+}
+
+// Ce qui appartient à la marque : une citation de l'une de ses propriétés
+// compte pour elle. Une marque ne se limite pas à son site.
+model Propriete {
+  id       String  @id @default(cuid())
+  projetId String
+  projet   Projet  @relation(fields: [projetId], references: [id], onDelete: Cascade)
+  // "site" (valeur = domaine sans « www. ») ou "youtube" (valeur = identifiant « UC… » de la chaîne).
+  type     String
+  valeur   String
+  // Nom lisible : nom de la chaîne YouTube, par exemple.
+  libelle  String?
+
+  @@unique([projetId, type, valeur])
+}
+
+// État d'une ligne de la liste de travail (page Actions). Les lignes sont
+// recalculées depuis les relevés ; seule leur avancée est enregistrée ici.
+// Une ligne sans état enregistré est « à faire ».
+model EtatAction {
+  projetId String
+  projet   Projet   @relation(fields: [projetId], references: [id], onDelete: Cascade)
+  // Clé stable de la ligne : "page:<adresse>", "video:<question>", "seo:<question>"…
+  cle      String
+  // "a_faire", "en_cours", "fait", "ecarte", ou "ajoute" (ligne épinglée à la main, encore à faire).
+  etat     String
+  majLe    DateTime @updatedAt
+  // Note libre de l'utilisateur sur cette ligne.
+  note     String?
+  // Jour où la ligne est passée à « fait » : c'est la date de la mesure « avant / après ».
+  faitLe   DateTime?
+  // Copie de la ligne au moment où son état change. Une action réussie sort de
+  // la liste recalculée : sans cette copie, son résultat disparaîtrait avec elle.
+  titre       String?
+  famille     String?
+  lien        String?
+  questionIds String[] @default([])
+
+  @@id([projetId, cle])
+}
+
+// Journal des prises de contact d'une ligne de la liste de travail : à qui on
+// a écrit, quand, et ce qui est revenu. Sert à ne pas relancer deux fois le
+// même site, et à voir ce qui a marché.
+model Demarche {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  projetId  String
+  projet    Projet   @relation(fields: [projetId], references: [id], onDelete: Cascade)
+  // Clé de la ligne de travail concernée (voir EtatAction.cle).
+  cle       String
+  // "ajout" (demander un ajout), "reponse" (répondre dans un fil), "test"
+  // (proposer un test), "correction" (demander une correction), "relance", "autre".
+  type      String
+  // Jour de la démarche.
+  faiteLe   DateTime
+  // À qui : un nom, une adresse, un site.
+  contact   String?
+  // "attente", "oui", "non" ou "sans" (sans réponse).
+  reponse   String   @default("attente")
+  note      String?
+
+  @@index([projetId, cle])
+}
+
+model Concurrent {
+  id       String  @id @default(cuid())
+  projetId String
+  projet   Projet  @relation(fields: [projetId], references: [id], onDelete: Cascade)
+  nom      String
+  domaine  String?
+
+  @@unique([projetId, nom])
+}
+
+// ── Questions et relevés ────────────────────────────────────────────────────
+// Une question est ce qu'un client potentiel demande à une IA. Langue et pays
+// sont portés par la question : rien n'est codé en dur pour la France.
+model Question {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  texte     String
+  // Code de langue ISO 639-1 ("fr") et code de pays ISO 3166-1 alpha-2 ("FR").
+  langue    String
+  pays      String
+  projetId  String
+  projet    Projet   @relation(fields: [projetId], references: [id], onDelete: Cascade)
+  ordre     Int      @default(0)
+  // Une question lancée ne se modifie plus : on l'archive, son historique reste.
+  archive   Boolean  @default(false)
+  // Étiquettes posées par le petit modèle, modifiables à la main.
+  // Thème : quelques mots, partagés par plusieurs questions du projet.
+  theme     String?
+  // "informer", "comparer" ou "acheter".
+  intention String?
+  etiqueteLe DateTime?
+  // Vrai quand les étiquettes ont été corrigées à la main : le modèle n'y touche plus.
+  etiquetteMain Boolean @default(false)
+  releves   Releve[]
+
+  @@unique([projetId, texte, langue, pays])
+}
+
+// Un relevé : la réponse d'une IA à une question, à un instant donné.
+// Tant que la réponse n'est pas revenue, la ligne sert de file d'attente
+// (statut "en_attente", identifiant de tâche du fournisseur).
+model Releve {
+  id          String    @id @default(cuid())
+  // Moment où la question a été envoyée.
+  createdAt   DateTime  @default(now())
+  questionId  String
+  question    Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  // "chatgpt", "gemini", "google_ai_mode", "google_ai_overview", "claude"…
+  moteur      String
+  // "interface" (ce que voit l'utilisateur) ou "api" (réponse du modèle seul).
+  // Ne JAMAIS mélanger les deux dans un même indicateur.
+  methode     String
+  fournisseur String
+  tacheId     String?
+  // "en_attente", "recu", "vide" (l'IA n'a rien affiché pour cette question,
+  // par exemple pas d'aperçu IA) ou "echec".
+  statut      String
+  // Moment où le fournisseur a obtenu la réponse, puis où nous l'avons lue.
+  releveLe    DateTime?
+  recuLe      DateTime?
+  modele      String?
+  // Réponse affichée, en Markdown.
+  texte       String?
+  // Lien fourni par le fournisseur pour contrôler le résultat.
+  urlControle String?
+  // Message d'échec, ou raison d'un relevé vide.
+  erreur      String?
+  // Réponse complète du fournisseur : permet de refaire l'analyse sans repayer.
+  brut        Json?
+  coutUsd     Decimal   @default(0) @db.Decimal(12, 6)
+  // Moment où la réponse a été lue par le petit modèle (marques, rang, ton).
+  analyseLe   DateTime?
+  // Relevé d'une « mesure approfondie » : la même question posée plusieurs fois
+  // de suite. Il compte pour le verdict de sa question, pas dans les chiffres
+  // d'ensemble du projet (une question y pèserait vingt-cinq fois plus).
+  approfondi  Boolean   @default(false)
+  // Moment où la réponse a été comparée aux faits vérifiés du projet.
+  faitsLe     DateTime?
+  contradictions Contradiction[]
+  sources     Source[]
+  mentions    Mention[]
+  recherches  Recherche[]
+  resultatsGoogle ResultatGoogle[]
+  questionsAssociees QuestionAssociee[]
+
+  @@unique([fournisseur, tacheId])
+  @@index([questionId, moteur, createdAt])
+  @@index([statut])
+}
+
+// Une page citée ou consultée par l'IA pour un relevé.
+model Source {
+  id       String  @id @default(cuid())
+  releveId String
+  releve   Releve  @relation(fields: [releveId], references: [id], onDelete: Cascade)
+  position Int
+  url      String
+  // Domaine sans "www.", en minuscules.
+  domaine  String
+  titre    String?
+  extrait  String?
+  // "citee" : affichée comme source de la réponse.
+  // "consultee" : page lue par l'IA pendant sa recherche, sans être citée.
+  role     String
+  // Renseigné quand la source est une vidéo YouTube : permet de savoir à
+  // quelle chaîne elle appartient (la nôtre, un concurrent, un tiers).
+  videoYoutubeId String?
+  videoYoutube   VideoYoutube? @relation(fields: [videoYoutubeId], references: [id])
+
+  @@index([releveId])
+  @@index([domaine])
+  @@index([videoYoutubeId])
+}
+
+// ── Ce qu'on extrait de la réponse brute d'un relevé ────────────────────────
+// Ces quatre tables se recalculent à volonté depuis la colonne `brut` de
+// Releve, sans repayer (`npm run essai-releves -- extraire`).
+
+// Marque nommée dans une réponse.
+model Mention {
+  id          String  @id @default(cuid())
+  releveId    String
+  releve      Releve  @relation(fields: [releveId], references: [id], onDelete: Cascade)
+  nom         String
+  description String?
+  categorie   String?
+  // Ordre d'apparition dans la réponse : 1 pour la première marque nommée.
+  rang        Int
+  // Ton employé pour la marque : "positif", "neutre" ou "negatif" (analyse seulement).
+  ton         String?
+  // "fournisseur" : repérée par le fournisseur du relevé (ChatGPT chez
+  // DataForSEO). "analyse" : repérée par notre petit modèle (étape 5).
+  origine     String
+
+  @@index([releveId])
+  @@index([nom])
+}
+
+// Recherche que l'IA a lancée elle-même sur le web avant de répondre.
+model Recherche {
+  id       String @id @default(cuid())
+  releveId String
+  releve   Releve @relation(fields: [releveId], references: [id], onDelete: Cascade)
+  texte    String
+  position Int
+
+  @@index([releveId])
+}
+
+// Résultat classique de Google, relevé en même temps qu'un Aperçu IA : sert à
+// savoir si une source de l'aperçu est aussi dans les 10 premiers résultats.
+model ResultatGoogle {
+  id       String  @id @default(cuid())
+  releveId String
+  releve   Releve  @relation(fields: [releveId], references: [id], onDelete: Cascade)
+  rang     Int
+  url      String
+  domaine  String
+  titre    String?
+
+  @@index([releveId])
+  @@index([domaine])
+}
+
+// « Autres questions posées » affichées par Google : des idées de questions à suivre.
+model QuestionAssociee {
+  id       String @id @default(cuid())
+  releveId String
+  releve   Releve @relation(fields: [releveId], references: [id], onDelete: Cascade)
+  texte    String
+  position Int
+
+  @@index([releveId])
+}
+
+// Fiche d'une vidéo YouTube citée par une IA, lue une fois par l'API publique
+// de YouTube (gratuite). Une marque ne se limite pas à son site : une vidéo de
+// sa chaîne citée par une IA compte comme une citation de la marque.
+model VideoYoutube {
+  // Identifiant YouTube de la vidéo (11 caractères).
+  id        String    @id
+  chaineId  String
+  chaineNom String
+  titre     String
+  publieLe  DateTime?
+  vues      Int?
+  majLe     DateTime  @updatedAt
+  sources   Source[]
+
+  @@index([chaineId])
+}
+
+// ── Sites cités : leur type, classé une fois et gardé ───────────────────────
+// Un domaine vu dans les sources est classé une seule fois par le petit modèle
+// (ou corrigé à la main), à partir de son nom et des titres de ses pages citées.
+// Le classement vaut pour tous les projets. À qui le site appartient (à nous, à
+// un concurrent suivi, à une autre marque, à un tiers) se déduit à l'affichage,
+// projet par projet, du type et de la marque propriétaire.
+model Domaine {
+  // Domaine sans « www. », en minuscules.
+  domaine  String   @id
+  // "comparatif", "media", "blog", "forum", "annuaire", "marque", "officiel",
+  // "video", "social", "boutique" ou "autre".
+  type     String
+  // Marque à qui appartient le site, quand c'est le site d'une marque.
+  marque   String?
+  // "modele" (classé par le petit modèle) ou "main" (corrigé par l'utilisateur).
+  origine  String   @default("modele")
+  modele   String?
+  classeLe DateTime @default(now())
+}
+
+// ── Faits vérifiés et contradictions ────────────────────────────────────────
+// Un fait vérifié sur la marque, écrit par l'utilisateur : prix, offre, pays,
+// date de création… Les réponses des IA qui disent autre chose sont signalées.
+model Fait {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  projetId  String
+  projet    Projet   @relation(fields: [projetId], references: [id], onDelete: Cascade)
+  texte     String
+  contradictions Contradiction[]
+
+  @@index([projetId])
+}
+
+// Une réponse d'IA qui contredit un fait vérifié, avec la phrase en cause.
+model Contradiction {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  releveId  String
+  releve    Releve   @relation(fields: [releveId], references: [id], onDelete: Cascade)
+  faitId    String
+  fait      Fait     @relation(fields: [faitId], references: [id], onDelete: Cascade)
+  // La phrase de la réponse qui dit autre chose que le fait.
+  phrase    String
+  // En quoi elle le contredit, en une phrase.
+  explication String?
+  // Source citée par l'IA à l'appui de cette phrase, quand elle est connue.
+  sourceUrl String?
+  // Écartée à la main : la phrase ne contredit pas vraiment le fait.
+  ecartee   Boolean  @default(false)
+
+  @@index([releveId])
+  @@index([faitId])
+}
+
+// ── Comptes (Better Auth) ───────────────────────────────────────────────────
+// Inscription fermée : les comptes sont créés par `npm run creer-compte`.
+model User {
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  // "admin" : accès à la rubrique Administration (coûts). "membre" sinon.
+  role          String    @default("membre")
+  // Langue de l'interface choisie dans Réglages : "fr" ou "en". Vide : français.
+  langue        String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  issuer                String? // requis par better-auth 1.7
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// Page de partage : un lien privé, sans compte, qu'un client ou un partenaire
+// consulte pour une série de questions d'un projet (/partage/[jeton]). Les
+// chiffres sont lus en direct à chaque ouverture : rien n'est figé, rien n'est payé.
+model Partage {
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  // Jeton aléatoire de l'adresse : impossible à deviner, change si l'on refait le lien.
+  jeton        String    @unique
+  projetId     String
+  projet       Projet    @relation(fields: [projetId], references: [id], onDelete: Cascade)
+  titre        String
+  // Pour qui la page est faite (« Équipe marketing de Facturo »). Facultatif.
+  destinataire String?
+  // Questions montrées, dans l'ordre (identifiants), et IA montrées (vide : toutes).
+  questions    String[]  @default([])
+  moteurs      String[]  @default([])
+  // Langue de la page, quelle que soit celle du navigateur de la personne qui l'ouvre.
+  langue       String    @default("fr")
+  // Montrer un extrait du texte des réponses, et les marques nommées à la place.
+  reponses     Boolean   @default(true)
+  concurrents  Boolean   @default(true)
+  expireLe     DateTime?
+  // Lien coupé à la main : la page ne s'ouvre plus.
+  coupeLe      DateTime?
+  // Nom de la personne qui l'a créé, affiché sur la page (« préparé par »).
+  auteur       String?
+  // Ouvertures par quelqu'un qui n'est pas connecté à l'outil.
+  vues         Int       @default(0)
+  derniereVue  DateTime?
+
+  @@index([projetId])
+}
+
+// Page suivie : une page de la marque (un article, une page produit) et les
+// questions auxquelles elle devrait répondre. L'outil lit la page, propose des
+// questions (modifiables), puis dit si les IA citent cette page en y répondant.
+model PageSuivie {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  projetId  String
+  projet    Projet   @relation(fields: [projetId], references: [id], onDelete: Cascade)
+  // Adresse telle qu'elle a été saisie (nettoyée), et clé de comparaison avec les
+  // sources citées : domaine sans « www. », chemin sans barre finale, sans paramètres.
+  url       String
+  cle       String
+  titre     String?
+  // Questions du projet rattachées à la page (identifiants), dans l'ordre.
+  questions String[] @default([])
+  // Dernière lecture de la page par l'outil (pour proposer des questions).
+  luLe      DateTime?
+  auteur    String?
+
+  @@unique([projetId, cle])
+}

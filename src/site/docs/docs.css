@@ -1,0 +1,793 @@
+/*
+ * Documentation et cas d'usage. Même carnet que le reste du site (papier,
+ * encre, surligneur, filets fins, caractères de machine) : rien de nouveau
+ * sur le fond, seulement la mise en page d'une documentation. Le sommaire à
+ * gauche, la page au milieu, « Sur cette page » à droite.
+ * Tout est limité à .site .docs : le reste du site et l'outil n'en voient rien.
+ */
+
+/* ── Mise en page ────────────────────────────────────────────────────────── */
+.site .docs.cadre {
+  padding-bottom: 1rem;
+  padding-top: 1.75rem;
+}
+.site .docs-grille {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+.site .docs-article {
+  min-width: 0;
+}
+.site .docs-nav,
+.site .docs-toc {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .site .docs.cadre {
+    padding-top: 2.5rem;
+  }
+  .site .docs-grille {
+    column-gap: 2.75rem;
+    grid-template-columns: 13.5rem minmax(0, 1fr);
+  }
+  .site .docs-nav-mobile {
+    display: none;
+  }
+  .site .docs-nav {
+    align-self: start;
+    display: block;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-bottom: 2rem;
+    position: sticky;
+    top: 1.5rem;
+  }
+  .site .docs-article {
+    max-width: 48rem;
+  }
+}
+@media (min-width: 1280px) {
+  .site .docs-grille {
+    column-gap: 2.5rem;
+    grid-template-columns: 13.5rem minmax(0, 1fr) 11.5rem;
+  }
+  .site .docs-toc {
+    align-self: start;
+    display: block;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    position: sticky;
+    top: 1.5rem;
+  }
+}
+
+/* ── Sommaire (à gauche ; dans un volet sur téléphone) ───────────────────── */
+.site .docs-nav-mobile {
+  border: 1px solid var(--encre);
+  background: color-mix(in srgb, var(--papier) 55%, #fff);
+}
+.site .docs-nav-mobile > summary {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-weight: 600;
+  justify-content: space-between;
+  list-style: none;
+  padding: 0.75rem 1rem;
+}
+.site .docs-nav-mobile > summary::-webkit-details-marker {
+  display: none;
+}
+.site .docs-nav-mobile[open] > summary {
+  border-bottom: 1px solid var(--filet);
+}
+.site .docs-nav-mobile[open] .docs-chevron {
+  transform: rotate(180deg);
+}
+.site .docs-chevron {
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+.site .docs-nav-mobile .docs-sommaire {
+  max-height: 65vh;
+  overflow-y: auto;
+  padding: 0.25rem 1rem 1rem;
+}
+.site .docs-bascule {
+  border: 1px solid var(--encre);
+  display: grid;
+  font-size: 0.875rem;
+  grid-template-columns: 1fr 1fr;
+  margin: 0.75rem 0 0.5rem;
+}
+.site .docs-bascule a {
+  padding: 0.45rem 0.5rem;
+  text-align: center;
+}
+.site .docs-bascule a + a {
+  border-left: 1px solid var(--encre);
+}
+.site .docs-bascule a[aria-current] {
+  background: var(--encre);
+  color: var(--papier);
+  font-weight: 600;
+}
+.site .docs-bascule a:not([aria-current]):hover {
+  background: var(--papier-fonce);
+}
+.site .docs-nav .docs-bascule {
+  margin-top: 0;
+}
+.site .docs-sommaire-rubrique {
+  margin-top: 1.4rem;
+}
+.site .docs-sommaire-rubrique > .machine {
+  color: var(--encre-pale);
+  margin-bottom: 0.4rem;
+}
+.site .docs-sommaire-rubrique ul {
+  border-left: 1px solid var(--filet);
+}
+.site .docs-sommaire-rubrique a {
+  border-left: 2px solid transparent;
+  color: var(--encre-douce);
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  margin-left: -1px;
+  padding: 0.32rem 0 0.32rem 0.8rem;
+}
+.site .docs-sommaire-rubrique a:hover {
+  color: var(--encre);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.site .docs-sommaire-rubrique a[aria-current='page'] {
+  border-left-color: var(--encre);
+  color: var(--encre);
+  font-weight: 600;
+}
+.site .docs-sommaire-rubrique a[aria-current='page'] {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--surligneur) 55%, transparent), transparent 85%);
+}
+
+/* ── Tête de page ────────────────────────────────────────────────────────── */
+.site .docs-fil ol {
+  color: var(--encre-douce);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.5rem;
+}
+.site .docs-fil li {
+  display: flex;
+  gap: 0.5rem;
+}
+.site .docs-fil a:hover {
+  text-decoration: underline;
+}
+.site .docs-fil [aria-current='page'] {
+  color: var(--encre);
+}
+.site .docs-tete {
+  border-bottom: 2px solid var(--encre);
+  margin-top: 1.4rem;
+  padding-bottom: 1.6rem;
+}
+.site .docs-surtitre {
+  color: var(--encre-pale);
+  margin-bottom: 0.7rem;
+}
+.site .docs-tete h1 {
+  font-size: clamp(2.1rem, 5.4vw, 3.4rem);
+  max-width: 22ch;
+}
+.site .docs-tete .chapo {
+  margin-top: 1.1rem;
+  max-width: 42rem;
+}
+.site .docs-place {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+  margin-top: 1.1rem;
+}
+.site .docs-place .machine {
+  color: var(--encre-pale);
+}
+.site .docs-place-chemin {
+  border: 1px solid var(--filet);
+  background: color-mix(in srgb, var(--papier) 50%, #fff);
+  font-size: 0.85rem;
+  padding: 0.1rem 0.5rem;
+}
+
+/* ── Le texte ────────────────────────────────────────────────────────────── */
+.site .docs-prose {
+  font-size: 1.0625rem;
+  line-height: 1.68;
+  padding-top: 0.4rem;
+}
+.site .docs-prose > * + * {
+  margin-top: 1.05rem;
+}
+.site .docs-prose > p,
+.site .docs-prose > .docs-liste {
+  max-width: 44rem;
+}
+.site .docs-prose h2 {
+  border-top: 1px solid var(--filet);
+  font-size: clamp(1.55rem, 3.2vw, 2rem);
+  line-height: 1.12;
+  margin-top: 2.75rem;
+  padding-top: 1.1rem;
+  scroll-margin-top: 1.25rem;
+}
+.site .docs-prose > h2:first-child {
+  border-top: 0;
+  margin-top: 1.5rem;
+  padding-top: 0;
+}
+.site .docs-prose h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 2rem;
+  scroll-margin-top: 1.25rem;
+}
+.site .docs-prose h2 + *,
+.site .docs-prose h3 + * {
+  margin-top: 0.7rem;
+}
+.site .docs-prose a,
+.site .docs-legende a,
+.site .docs-encadre a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.site .docs-prose a:hover,
+.site .docs-legende a:hover,
+.site .docs-encadre a:hover {
+  text-decoration-thickness: 2px;
+}
+.site .docs-prose a.docs-carte,
+.site .docs-prose a.docs-cas,
+.site .docs-prose a.lien-fleche {
+  text-decoration: none;
+}
+.site .docs mark.surligne {
+  color: inherit;
+}
+.site .docs code {
+  background: var(--papier-fonce);
+  border: 1px solid var(--filet);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.86em;
+  padding: 0.04em 0.32em;
+  white-space: nowrap;
+}
+.site .docs-lien-casse {
+  border-bottom: 1px dashed var(--vermillon);
+}
+.site .docs-liste li {
+  padding-left: 1.4rem;
+  position: relative;
+}
+.site .docs-liste li + li {
+  margin-top: 0.45rem;
+}
+.site ul.docs-liste > li::before {
+  background: var(--encre);
+  content: '';
+  height: 1px;
+  left: 0;
+  position: absolute;
+  top: 0.85em;
+  width: 0.75rem;
+}
+.site ol.docs-liste {
+  counter-reset: docs-liste;
+}
+.site ol.docs-liste > li {
+  counter-increment: docs-liste;
+  padding-left: 2rem;
+}
+.site ol.docs-liste > li::before {
+  color: var(--encre-pale);
+  content: counter(docs-liste, decimal-leading-zero);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.8rem;
+  left: 0;
+  position: absolute;
+  top: 0.2em;
+}
+.site .docs-lecteur {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+/* ── Tableaux ────────────────────────────────────────────────────────────── */
+.site .docs-tableau {
+  margin-top: 1.4rem;
+}
+.site .docs-tableau .matrice {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.site .docs-tableau .matrice thead th {
+  white-space: normal;
+}
+.site .docs-tableau .matrice th[scope='row'] {
+  font-weight: 600;
+  min-width: 8rem;
+}
+.site .docs-tableau:focus-visible {
+  outline: 2px solid var(--encre);
+  outline-offset: 3px;
+}
+
+/* ── Encadrés : à savoir, limite, conseil ────────────────────────────────── */
+.site .docs-encadre {
+  background: color-mix(in srgb, var(--papier) 45%, #fff);
+  border: 1px solid var(--encre);
+  border-left-width: 4px;
+  margin-top: 1.5rem;
+  max-width: 44rem;
+  padding: 0.9rem 1.15rem 1rem;
+}
+.site .docs-encadre-ton {
+  color: var(--encre-douce);
+  margin-bottom: 0.35rem;
+}
+.site .docs-encadre-titre {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.site .docs-encadre.limite {
+  border-left-color: var(--vermillon);
+}
+.site .docs-encadre.limite .docs-encadre-ton {
+  color: var(--vermillon);
+}
+.site .docs-encadre.conseil .docs-encadre-ton {
+  background: var(--surligneur);
+  box-shadow: inset 0 0 0 1px var(--encre);
+  color: var(--encre);
+  display: inline-block;
+  padding: 0 0.35rem;
+}
+
+/* ── Étapes ──────────────────────────────────────────────────────────────── */
+.site .docs-etapes {
+  border-bottom: 1px solid var(--filet);
+  margin-top: 1.5rem;
+}
+.site .docs-etapes > li {
+  border-top: 1px solid var(--filet);
+  display: grid;
+  gap: 0 1rem;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  padding: 1rem 0 1.15rem;
+}
+.site .docs-etape-num {
+  font-family: var(--font-titre), Georgia, serif;
+  font-size: 1.7rem;
+  line-height: 1;
+}
+.site .docs-etape-titre {
+  font-weight: 700;
+  line-height: 1.35;
+}
+.site .docs-etape-texte {
+  color: var(--encre-douce);
+  margin-top: 0.3rem;
+}
+
+/* ── Captures de l'outil ─────────────────────────────────────────────────── */
+.site .docs-capture {
+  margin: 2rem 0 1.25rem;
+}
+.site .docs-capture.compacte {
+  margin: 1rem 0 0.5rem;
+}
+.site .docs-capture-cadre {
+  background: #fffdf8;
+  border: 1px solid var(--encre);
+  box-shadow: 5px 5px 0 var(--encre);
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .site .docs-capture-cadre {
+    box-shadow: 8px 8px 0 var(--encre);
+  }
+}
+.site .docs-capture-cadre img {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+.site .docs-capture-bouton {
+  background: none;
+  border: 0;
+  cursor: zoom-in;
+  display: block;
+  padding: 0;
+  position: relative;
+  width: 100%;
+}
+.site .docs-capture-loupe {
+  background: var(--encre);
+  bottom: 0.6rem;
+  color: var(--papier);
+  opacity: 0;
+  padding: 0.25rem 0.5rem;
+  position: absolute;
+  right: 0.6rem;
+  transition: opacity 0.15s ease;
+}
+.site .docs-capture-bouton:hover .docs-capture-loupe,
+.site .docs-capture-bouton:focus-visible .docs-capture-loupe {
+  opacity: 1;
+}
+.site .docs-capture-bouton:focus-visible {
+  outline-offset: -4px;
+}
+.site .docs-legende {
+  color: var(--encre-douce);
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+  gap: 0.2rem;
+  line-height: 1.5;
+  margin-top: 1rem;
+  max-width: 44rem;
+}
+.site .docs-legende .machine {
+  color: var(--encre-pale);
+}
+/* Capture absente du manifeste : un cadre neutre, à la taille d'un écran. */
+.site .docs-capture-vide {
+  aspect-ratio: 16 / 10;
+  display: flex;
+  flex-direction: column;
+}
+.site .docs-capture-vide-barre {
+  align-items: center;
+  border-bottom: 1px solid var(--filet);
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.55rem 0.85rem;
+}
+.site .docs-capture-vide-barre .machine {
+  color: var(--encre-pale);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.site .docs-points {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+.site .docs-points i {
+  border: 1px solid var(--encre-pale);
+  border-radius: 50%;
+  display: block;
+  height: 0.5rem;
+  width: 0.5rem;
+}
+.site .docs-capture-vide-corps {
+  align-items: center;
+  background-image: repeating-linear-gradient(0deg, transparent 0 27px, var(--filet) 27px 28px);
+  color: var(--encre-pale);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.4rem;
+  justify-content: center;
+}
+.site .docs-capture-vide-corps .titre {
+  background: #fffdf8;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  padding: 0 0.6rem;
+}
+.site .docs-capture-vide-corps .machine {
+  background: #fffdf8;
+  padding: 0 0.4rem;
+}
+
+/* La loupe : la capture en grand, par-dessus la page. */
+.site .docs-loupe {
+  background: var(--papier);
+  border: 1px solid var(--encre);
+  box-shadow: 8px 8px 0 var(--surligneur);
+  margin: auto;
+  max-height: 94vh;
+  max-width: min(96vw, 1680px);
+  overflow: auto;
+  padding: 0;
+}
+.site .docs-loupe::backdrop {
+  background: rgba(20, 32, 27, 0.82);
+}
+.site .docs-loupe-corps {
+  position: relative;
+}
+.site .docs-loupe-corps img {
+  display: block;
+  height: auto;
+  max-width: none;
+  width: min(1600px, 94vw);
+}
+.site .docs-loupe-fermer {
+  padding: 0.45rem 0.8rem;
+  position: sticky;
+  float: right;
+  right: 0.75rem;
+  top: 0.75rem;
+  z-index: 1;
+  margin: 0.75rem 0.75rem -3rem 0;
+}
+
+/* ── Renvois et cartes ───────────────────────────────────────────────────── */
+.site .docs-renvois {
+  margin-top: 2.25rem;
+}
+.site .docs-renvois-titre {
+  color: var(--encre-pale);
+  margin-bottom: 0.75rem;
+}
+.site .docs-cartes {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 640px) {
+  .site .docs-cartes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.site .docs-carte {
+  background: color-mix(in srgb, var(--papier) 55%, #fff);
+  border: 1px solid var(--encre);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  height: 100%;
+  padding: 0.9rem 1rem 1rem;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.site .docs-carte:hover,
+.site .docs-carte:focus-visible {
+  box-shadow: 4px 4px 0 var(--encre);
+  transform: translate(-2px, -2px);
+}
+.site .docs-carte-rubrique {
+  color: var(--encre-pale);
+}
+.site .docs-carte-titre {
+  font-family: var(--font-titre), Georgia, serif;
+  font-size: 1.3rem;
+  line-height: 1.15;
+  padding-right: 1.5rem;
+}
+.site .docs-carte-texte {
+  color: var(--encre-douce);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.site .docs-carte-fleche {
+  position: absolute;
+  right: 1rem;
+  top: 2.05rem;
+  transition: transform 0.15s ease;
+}
+.site .docs-carte:hover .docs-carte-fleche {
+  transform: translateX(3px);
+}
+
+/* ── Accueil de la documentation : les rubriques ─────────────────────────── */
+.site .docs-rubriques {
+  margin-top: 3rem;
+}
+.site .docs-rubriques > h2 {
+  border-top: 1px solid var(--filet);
+  font-size: clamp(1.55rem, 3.2vw, 2rem);
+  padding-top: 1.1rem;
+  scroll-margin-top: 1.25rem;
+}
+.site .docs-rubriques > ul {
+  display: grid;
+  gap: 1.75rem 2rem;
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: 1.25rem;
+}
+@media (min-width: 700px) {
+  .site .docs-rubriques > ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.site .docs-rubrique {
+  border-top: 2px solid var(--encre);
+  padding-top: 0.85rem;
+  scroll-margin-top: 1.25rem;
+}
+.site .docs-rubrique-titre {
+  font-size: 1.5rem;
+}
+.site .docs-rubrique-texte {
+  color: var(--encre-douce);
+  font-size: 0.925rem;
+  margin-top: 0.35rem;
+}
+.site .docs-rubrique ul {
+  margin-top: 0.6rem;
+}
+.site .docs-rubrique li {
+  border-top: 1px solid var(--filet);
+}
+.site .docs-rubrique li a {
+  display: block;
+  font-size: 0.95rem;
+  padding: 0.4rem 0;
+}
+.site .docs-rubrique li a::after {
+  content: ' →';
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.site .docs-rubrique li a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.site .docs-rubrique li a:hover::after {
+  opacity: 1;
+}
+.site .docs-rubriques-cas {
+  margin-top: 2rem;
+}
+
+/* ── Sommaire des cas d'usage ────────────────────────────────────────────── */
+.site .docs-liste-cas section + section {
+  margin-top: 0.5rem;
+}
+.site .docs-liste-cas section:first-child > h2 {
+  border-top: 0;
+  margin-top: 1.25rem;
+  padding-top: 0;
+}
+.site .docs-liste-cas h2 {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+}
+.site .docs-compte {
+  color: var(--encre-pale);
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+.site .docs-liste-cas ul {
+  margin-top: 0.6rem;
+}
+.site .docs-liste-cas li {
+  border-top: 1px solid var(--filet);
+}
+.site .docs-liste-cas li:last-child {
+  border-bottom: 1px solid var(--filet);
+}
+.site .docs-cas {
+  display: block;
+  padding: 0.85rem 0;
+}
+.site .docs-cas-titre {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.site .docs-cas-texte {
+  color: var(--encre-douce);
+  display: block;
+  font-size: 0.925rem;
+  margin-top: 0.2rem;
+  max-width: 42rem;
+}
+.site .docs-cas:hover .docs-cas-titre {
+  background: linear-gradient(transparent 60%, var(--surligneur) 60%, var(--surligneur) 94%, transparent 94%);
+}
+
+/* ── Fin de page : mise à jour, précédente et suivante ───────────────────── */
+.site .docs-pied {
+  border-top: 2px solid var(--encre);
+  margin-top: 3.5rem;
+  padding-top: 1rem;
+}
+.site .docs-maj {
+  color: var(--encre-pale);
+}
+.site .docs-voisines {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: 1.25rem;
+}
+@media (min-width: 640px) {
+  .site .docs-voisines {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.site .docs-voisine {
+  border: 1px solid var(--encre);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.85rem 1rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.site .docs-voisine .machine {
+  color: var(--encre-pale);
+}
+.site .docs-voisine.suivante {
+  text-align: right;
+}
+.site .docs-voisine:hover,
+.site .docs-voisine:focus-visible {
+  box-shadow: 4px 4px 0 var(--encre);
+  transform: translate(-2px, -2px);
+}
+.site .docs-voisine-titre {
+  font-family: var(--font-titre), Georgia, serif;
+  font-size: 1.2rem;
+  line-height: 1.2;
+}
+
+/* ── « Sur cette page » ──────────────────────────────────────────────────── */
+.site .docs-toc-titre {
+  color: var(--encre-pale);
+  margin-bottom: 0.6rem;
+}
+.site .docs-toc-nav ul {
+  border-left: 1px solid var(--filet);
+}
+.site .docs-toc-nav a {
+  border-left: 2px solid transparent;
+  color: var(--encre-douce);
+  display: block;
+  font-size: 0.84rem;
+  line-height: 1.35;
+  margin-left: -1px;
+  padding: 0.28rem 0 0.28rem 0.8rem;
+}
+.site .docs-toc-nav li.niveau-3 a {
+  padding-left: 1.55rem;
+}
+.site .docs-toc-nav a:hover {
+  color: var(--encre);
+}
+.site .docs-toc-nav a[aria-current] {
+  border-left-color: var(--encre);
+  color: var(--encre);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site .docs-carte,
+  .site .docs-voisine,
+  .site .docs-chevron,
+  .site .docs-carte-fleche {
+    transition: none;
+  }
+  .site .docs-carte:hover,
+  .site .docs-voisine:hover {
+    transform: none;
+  }
+}

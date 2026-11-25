@@ -1,0 +1,185 @@
+import type { PageDoc } from '../../types'
+
+// Écran /questions (src/app/(app)/questions/page.tsx, Selection.tsx, actions.ts) :
+// verdicts (verdict, SEUIL_VERDICT dans src/lib/mesures.ts), tableau par IA,
+// filtres et regroupements, actions sur une sélection, bandeau d'étiquetage.
+const page: PageDoc = {
+  id: 'mesurer/questions',
+  rubrique: 'mesurer',
+  slug: { fr: 'mesurer/questions', en: 'measure/prompts' },
+  titre: { fr: 'L’écran Questions', en: 'The Prompts screen' },
+  resume: {
+    fr: 'Une ligne par question : l’état chez chaque IA, un verdict sur la période plutôt qu’un pourcentage, et qui est nommé en premier. Le point de départ pour agir.',
+    en: 'One row per prompt: the latest status for each AI, a verdict over the period rather than a percentage, and who is named first. The starting point for action.',
+  },
+  ecrans: ['/questions'],
+  maj: '2026-11-20',
+  contenu: {
+    fr: [
+      { type: 'p', texte: 'Une moyenne cache tout : la marque peut être solide sur trois questions et absente des sept autres. L’écran Questions montre la marque question par question, pour dire où elle tient, où elle manque, et qui prend la place. Chaque question y reçoit un verdict, parce qu’avec quelques réponses par question un pourcentage serait trompeur.' },
+      { type: 'p', texte: 'Pour y aller : un clic sur une question, partout dans l’outil, ouvre sa page ; le fil d’Ariane de cette page ramène ici. Le bouton **Ajouter des questions** mène à l’onglet Questions de la fiche du projet. Les filtres de la barre du haut (période, IA, face à un concurrent) s’appliquent, comme sur la [vue d’ensemble](doc:mesurer/vue-d-ensemble#barre-du-haut).' },
+      { type: 'capture', nom: 'questions', legende: 'L’écran Questions du projet Facturo : une ligne par question, l’état chez chaque IA, le verdict et le premier nommé.' },
+      { type: 'h2', id: 'phrase', texte: 'La phrase du haut et les bandeaux' },
+      { type: 'p', texte: 'La phrase donne le compte des verdicts : la marque est solide sur tant de questions, occasionnelle sur tant, absente sur tant, avec le nombre de réponses d’interface de la période. Des bandeaux s’ajoutent quand il le faut : des réponses en attente (avec **Récupérer les réponses**, gratuit), des questions jamais relevées (avec **Préparer un relevé**), des questions sans étiquette (avec **Étiqueter les questions**, payant, son prix sur le bouton).' },
+      { type: 'h2', id: 'verdict', texte: 'Le verdict d’une question' },
+      {
+        type: 'tableau',
+        colonnes: ['Verdict', 'Règle'],
+        lignes: [
+          ['**Solide**', 'La marque est nommée ou citée dans 6 réponses d’interface sur 10 ou plus.'],
+          ['**Occasionnelle**', 'Elle est présente, mais dans moins de 6 réponses sur 10.'],
+          ['**Absente**', 'Elle n’apparaît dans aucune réponse.'],
+          ['**Trop tôt pour dire**', 'Moins de 3 réponses d’interface sur la période.'],
+          ['**Pas encore relevée**', 'Aucune réponse pour l’instant.'],
+        ],
+      },
+      { type: 'p', texte: 'Le verdict compte toutes les réponses d’interface de la période, mesures approfondies comprises. Claude, mesuré par son API, n’y entre pas. Sous le verdict : le compte (« 4 sur 6 ») et le nombre d’IA d’interface où la marque apparaît, sur celles qui ont répondu.' },
+      { type: 'h2', id: 'tableau', texte: 'Le tableau « Par question et par IA »' },
+      {
+        type: 'tableau',
+        colonnes: ['Colonne', 'Ce qu’elle montre'],
+        lignes: [
+          ['**Question**', 'Le texte (un clic ouvre la page de la question), puis ses étiquettes : le thème (un clic filtre sur ce thème), l’intention, et « avec le nom de la marque » quand la question le contient.'],
+          ['**Une colonne par IA**', 'L’état du dernier relevé : Citée, Nommée (avec le rang quand il est connu), Lue, Absente, Pas d’aperçu, En attente ou Échec. Avec plusieurs relevés, le compte « 2 sur 3 » et un trait par relevé, surligné quand la marque est là. « hors période » : la question a été relevée, mais pas sur la période choisie. Un clic ouvre la réponse. Claude, mesuré par son API, a sa propre colonne.'],
+          ['**Verdict**', 'Voir ci-dessus.'],
+          ['**Premier nommé**', 'La marque le plus souvent nommée en premier dans les réponses à cette question, avec le nombre de fois. Un clic ouvre ces réponses. « marques pas encore lues » tant que la lecture n’est pas faite.'],
+          ['**Tendance**', 'La petite courbe de la présence de la marque sur cette question, jour de relevé après jour de relevé.'],
+          ['**Dernier relevé**', 'La date du dernier relevé et le nombre de relevés de la période.'],
+        ],
+      },
+      { type: 'p', texte: 'Les colonnes se trient d’un clic sur leur titre. Au-delà de cinq questions, un champ cherche dans les questions, les thèmes et les marques. Sous le tableau, la ligne **Présente dans** donne, IA par IA, le compte des réponses avec la marque, Claude à part ; elle ne compte pas les mesures approfondies. La légende des états suit.' },
+      { type: 'h2', id: 'filtrer', texte: 'Filtrer et grouper' },
+      { type: 'p', texte: 'Le volet **Filtrer et grouper**, au-dessus du tableau, propose :' },
+      {
+        type: 'liste',
+        items: [
+          '**Verdict** : Tous, Solide, Occasionnelle, Absente, Trop tôt pour dire, chacun avec son nombre de questions.',
+          '**Thème** et **Intention** (s’informer, comparer, acheter), quand les questions sont étiquetées.',
+          '**Grouper par** : Aucun, Thème ou Intention. Le tableau se découpe alors en groupes, chacun avec son titre.',
+          '**Nom de la marque** : Toutes, Sans, Avec. Les questions sans le nom disent si l’IA pense à la marque d’elle-même.',
+        ],
+      },
+      { type: 'p', texte: '**Tout afficher** retire les filtres. Quand un filtre est actif, le volet le signale.' },
+      { type: 'h2', id: 'selection', texte: 'Agir sur plusieurs questions' },
+      { type: 'p', texte: 'Chaque ligne a une case à cocher, et **Tout cocher** les coche toutes. Sur les questions cochées :' },
+      {
+        type: 'liste',
+        items: [
+          '**Archiver** : elles ne sont plus relevées et ne comptent plus dans les chiffres ; leur historique reste. Une question jamais relevée est simplement retirée. Une fenêtre demande de confirmer.',
+          '**Changer le thème** : le thème saisi remplace celui des questions cochées. Gratuit ; une étiquette posée à la main n’est plus changée par le modèle.',
+          '**Partir d’une page** (en haut de l’écran) : l’outil lit une page de la marque et propose les questions auxquelles elle répond. Voir [Pages suivies](doc:mesurer/pages-suivies).',
+          '**Partager** : ouvre l’écran Partages avec ces questions déjà cochées, pour en faire une page privée à envoyer à un client. Voir [Partager avec un client](doc:piloter/partages).',
+          '**Lancer un relevé pour la sélection** : ces questions seules, aux quatre IA d’interface, au prix écrit sur le bouton (questions × 4 × 0,0012 $). Claude n’est pas compris. Au-dessus du seuil de confirmation, une fenêtre demande de confirmer.',
+        ],
+      },
+      { type: 'p', texte: 'Les questions archivées se montrent avec le lien **Afficher les 2 questions archivées** (le nombre varie), sous le tableau ; leur page permet de reprendre le suivi.' },
+      { type: 'encadre', ton: 'savoir', titre: 'Les étiquettes et la carte des thèmes', texte: 'Le bouton **Étiqueter les questions** donne à chacune un thème et une intention, par un petit modèle, pour moins d’un centime par projet. Après ce premier clic, les questions ajoutées sont étiquetées toutes seules ; cela se coupe sur ce même écran. Quand des thèmes existent, la **Carte des thèmes** s’affiche sous le tableau : voir [Thèmes et carte des thèmes](doc:comprendre/themes).' },
+      { type: 'h2', id: 'pas-a-pas', texte: 'Trouver les questions à travailler' },
+      {
+        type: 'etapes',
+        items: [
+          { titre: 'Choisir une période assez longue', texte: 'Dans la barre du haut, 8 semaines ou plus : un verdict sur une seule réponse par IA est souvent « trop tôt pour dire ».' },
+          { titre: 'Filtrer les absentes', texte: '**Verdict › Absente**, puis **Nom de la marque › Sans** : ce sont les questions où l’IA ne pense pas à Facturo.' },
+          { titre: 'Lire le premier nommé', texte: 'Comptalis revient en tête sur plusieurs questions ? C’est le concurrent à étudier. Un clic ouvre les réponses qui le nomment.' },
+          { titre: 'Ouvrir une question', texte: 'Sa page dit qui gagne, grâce à quelles pages, et ce qu’il faut faire. Voir [La page d’une question](doc:mesurer/fiche-question).' },
+          { titre: 'Trancher les cas douteux', texte: 'Une question « occasionnelle » ou « trop tôt pour dire » qui compte pour vous se tranche avec une [mesure approfondie](doc:mesurer/mesure-approfondie).' },
+        ],
+      },
+      { type: 'h2', id: 'limites', texte: 'Limites' },
+      { type: 'encadre', ton: 'limite', texte: 'Avec une réponse par question, par IA et par semaine, un verdict repose sur peu de réponses : « solide » sur cinq réponses n’a pas la portée de « solide » sur quarante. Le seuil de 6 sur 10 est une règle de lecture, pas une mesure de la marge d’erreur, que la page de la question donne. Le premier nommé et le rang viennent de la lecture des réponses par un petit modèle, sauf pour ChatGPT. « Avec le nom de la marque » est déduit du texte de la question.' },
+      {
+        type: 'liens',
+        items: [
+          { page: 'mesurer/fiche-question' },
+          { page: 'comprendre/themes' },
+          { page: 'cas/themes-ou-je-suis-absent' },
+          { page: 'cas/questions-avec-ou-sans-marque' },
+        ],
+      },
+    ],
+    en: [
+      { type: 'p', texte: 'An average hides everything: the brand may be solid on three prompts and absent from the other seven. The Prompts screen shows the brand prompt by prompt, to tell where it holds, where it is missing, and who takes the spot. Each prompt gets a verdict, because with a few answers per prompt a percentage would be misleading.' },
+      { type: 'p', texte: 'To get there: clicking a prompt anywhere in the tool opens its page; that page’s breadcrumb brings you back here. The **Add prompts** button leads to the Prompts tab of the project page. The top-bar filters (period, AIs, versus a competitor) apply, as on the [overview](doc:mesurer/vue-d-ensemble#top-bar).' },
+      { type: 'capture', nom: 'questions', legende: 'The Prompts screen of the Facturo UK project: one row per prompt, the status for each AI, the verdict and who is named first.' },
+      { type: 'h2', id: 'headline', texte: 'The headline sentence and banners' },
+      { type: 'p', texte: 'The sentence counts the verdicts: the brand is solid on so many prompts, occasional on so many, absent on so many, with the number of interface answers in the period. Banners are added when needed: answers pending (with **Collect the answers**, free), prompts never run (with **Prepare a run**), prompts without tags (with **Tag the prompts**, paid, its price on the button).' },
+      { type: 'h2', id: 'verdict', texte: 'A prompt’s verdict' },
+      {
+        type: 'tableau',
+        colonnes: ['Verdict', 'Rule'],
+        lignes: [
+          ['**Solid**', 'The brand is mentioned or cited in 6 interface answers out of 10 or more.'],
+          ['**Occasional**', 'It is present, but in fewer than 6 answers out of 10.'],
+          ['**Absent**', 'It appears in no answer.'],
+          ['**Too early to tell**', 'Fewer than 3 interface answers in the period.'],
+          ['**Not captured yet**', 'No answer so far.'],
+        ],
+      },
+      { type: 'p', texte: 'The verdict counts all the interface answers of the period, deep measurements included. Claude, measured through its API, is left out. Under the verdict: the count (“4 out of 6”) and the number of interface AIs where the brand appears, out of those that answered.' },
+      { type: 'h2', id: 'table', texte: 'The “By prompt and by AI” table' },
+      {
+        type: 'tableau',
+        colonnes: ['Column', 'What it shows'],
+        lignes: [
+          ['**Prompt**', 'The text (a click opens the prompt’s page), then its tags: the topic (a click filters on it), the intent, and “with the brand name” when the prompt contains it.'],
+          ['**One column per AI**', 'The status of the latest reading: Cited, Mentioned (with the position when known), Read, Absent, No overview, Pending or Failed. With several readings, the count “2 out of 3” and one mark per reading, highlighted when the brand is there. “outside period”: the prompt was run, but not in the chosen period. A click opens the answer. Claude, measured through its API, has its own column.'],
+          ['**Verdict**', 'See above.'],
+          ['**Named first**', 'The brand most often named first in the answers to this prompt, with how many times. A click opens those answers. “brands not read yet” until reading is done.'],
+          ['**Trend**', 'The small line of the brand’s presence on this prompt, run day after run day.'],
+          ['**Last run**', 'The date of the latest reading and the number of readings in the period.'],
+        ],
+      },
+      { type: 'p', texte: 'Columns sort with a click on their header. Beyond five prompts, a field searches prompts, topics and brands. Under the table, the **Present in** line gives, AI by AI, the count of answers with the brand, Claude apart; it does not count deep measurements. The legend of the statuses follows.' },
+      { type: 'h2', id: 'filter', texte: 'Filter and group' },
+      { type: 'p', texte: 'The **Filter and group** panel, above the table, offers:' },
+      {
+        type: 'liste',
+        items: [
+          '**Verdict**: All, Solid, Occasional, Absent, Too early to tell, each with its number of prompts.',
+          '**Topic** and **Intent** (learn, compare, buy), once the prompts are tagged.',
+          '**Group by**: None, Topic or Intent. The table is then split into groups, each with its title.',
+          '**Brand name**: All, Without, With. Prompts without the name tell whether the AI thinks of the brand on its own.',
+        ],
+      },
+      { type: 'p', texte: '**Show all** clears the filters. When a filter is on, the panel says so.' },
+      { type: 'h2', id: 'selection', texte: 'Acting on several prompts' },
+      { type: 'p', texte: 'Each row has a checkbox, and **Select all** ticks them all. On the ticked prompts:' },
+      {
+        type: 'liste',
+        items: [
+          '**Archive**: they are no longer run and no longer count in the numbers; their history stays. A prompt never run is simply removed. A window asks you to confirm.',
+          '**Change topic**: the topic you type replaces the topic of the ticked prompts. Free; a tag set by hand is no longer changed by the model.',
+          '**Start from a page** (top of the screen): the tool reads a page of the brand and suggests the prompts it answers. See [Tracked pages](doc:mesurer/pages-suivies).',
+          '**Share**: opens the Shares screen with these prompts already ticked, to turn them into a private page for a client. See [Share with a client](doc:piloter/partages).',
+          '**Start a run for the selection**: these prompts only, to the four interface AIs, at the price written on the button (prompts × 4 × $0.0012). Claude is not included. Above the confirmation threshold, a window asks you to confirm.',
+        ],
+      },
+      { type: 'p', texte: 'Archived prompts are shown with the **Show the 2 archived prompts** link (the number varies) under the table; their page lets you resume tracking.' },
+      { type: 'encadre', ton: 'savoir', titre: 'Tags and the topic map', texte: 'The **Tag the prompts** button gives each prompt a topic and an intent, through a small model, for less than a cent per project. After that first click, added prompts are tagged on their own; this can be turned off on the same screen. Once topics exist, the **Topic map** appears under the table: see [Topics and the topic map](doc:comprendre/themes).' },
+      { type: 'h2', id: 'step-by-step', texte: 'Finding the prompts to work on' },
+      {
+        type: 'etapes',
+        items: [
+          { titre: 'Pick a long enough period', texte: 'In the top bar, 8 weeks or more: a verdict on a single answer per AI is often “too early to tell”.' },
+          { titre: 'Filter the absent ones', texte: '**Verdict › Absent**, then **Brand name › Without**: these are the prompts where the AI does not think of Facturo.' },
+          { titre: 'Read who is named first', texte: 'Comptalis comes first on several prompts? That is the competitor to study. A click opens the answers that name it.' },
+          { titre: 'Open a prompt', texte: 'Its page says who wins, thanks to which pages, and what to do. See [A prompt’s page](doc:mesurer/fiche-question).' },
+          { titre: 'Settle the doubtful cases', texte: 'An “occasional” or “too early to tell” prompt that matters to you is settled with a [deep measurement](doc:mesurer/mesure-approfondie).' },
+        ],
+      },
+      { type: 'h2', id: 'limits', texte: 'Limits' },
+      { type: 'encadre', ton: 'limite', texte: 'With one answer per prompt, per AI and per week, a verdict rests on few answers: “solid” on five answers does not carry the weight of “solid” on forty. The 6-out-of-10 threshold is a reading rule, not a measure of the margin of error, which the prompt’s page gives. Who is named first and the position come from a small model reading the answers, except for ChatGPT. “With the brand name” is deduced from the prompt’s text.' },
+      {
+        type: 'liens',
+        items: [
+          { page: 'mesurer/fiche-question' },
+          { page: 'comprendre/themes' },
+          { page: 'cas/themes-ou-je-suis-absent' },
+          { page: 'cas/questions-avec-ou-sans-marque' },
+        ],
+      },
+    ],
+  },
+}
+
+export default page

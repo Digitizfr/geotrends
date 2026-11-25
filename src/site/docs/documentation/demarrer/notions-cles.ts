@@ -1,0 +1,146 @@
+import type { PageDoc } from '../../types'
+
+// Les mots de l'outil, avec leur définition exacte (src/lib/mesures.ts,
+// src/lib/releves.ts, src/lib/classements.ts). Le glossaire complet est dans
+// reference/glossaire.
+const page: PageDoc = {
+  id: 'demarrer/notions-cles',
+  rubrique: 'demarrer',
+  slug: { fr: 'demarrer/notions-cles', en: 'get-started/key-concepts' },
+  titre: { fr: 'Notions clés', en: 'Key concepts' },
+  resume: {
+    fr: 'Question, relevé, méthode, présence, visibilité, part de voix, verdict, marge d’erreur : les mots de l’outil et ce qu’ils comptent exactement, avant de lire un écran.',
+    en: 'Prompt, run, reading, method, presence, visibility, share of voice, verdict, margin of error: the words of the tool and exactly what they count, before reading a screen.',
+  },
+  maj: '2026-11-18',
+  contenu: {
+    fr: [
+      { type: 'p', texte: 'GeoTrends emploie peu de mots, toujours dans le même sens. Les connaître évite les deux erreurs les plus courantes : additionner des choses qui ne s’additionnent pas, et lire un écart qui n’est que du hasard.' },
+      { type: 'h2', id: 'projet-et-marque', texte: 'Projet et marque' },
+      { type: 'p', texte: 'Un **projet** suit une marque sur un marché : un pays et une langue. Il réunit le nom de la marque, ce qui lui appartient, ses concurrents et ses questions. La même marque sur deux marchés fait deux projets. Le projet affiché se choisit en haut du menu de l’outil.' },
+      { type: 'p', texte: 'Une marque ne se limite pas à son site. Ses **propriétés** sont ses sites, ses chaînes YouTube, ses profils sociaux et les autres écritures de son nom. Une page d’un de ces sites, une vidéo d’une de ces chaînes ou une publication d’un de ces profils, citée par une IA, compte pour la marque.' },
+      { type: 'h2', id: 'question-et-releve', texte: 'Question, relevé, réponse' },
+      {
+        type: 'tableau',
+        colonnes: ['Mot', 'Ce qu’il désigne'],
+        lignes: [
+          ['**Question**', 'Ce qu’un client potentiel demande à une IA, avec ses mots : « Quel logiciel de facturation choisir pour un auto-entrepreneur ? ». Une question « sans nom de marque » ne contient pas le nom de la marque suivie.'],
+          ['**Relevé**', 'Une question posée à une IA à un instant donné. On dit aussi « relevé » pour l’envoi de toutes les questions d’un projet à plusieurs IA, le même jour.'],
+          ['**Réponse**', 'Ce que l’IA a répondu, gardé tel quel : son texte, les sources citées, les pages lues, les recherches lancées, les marques nommées dans l’ordre. Le texte n’est jamais traduit ni corrigé.'],
+          ['**Source**', 'Une page citée par l’IA pour répondre. Une page **lue** a été ouverte par l’IA sans être citée : on ne le sait que pour ChatGPT et Claude.'],
+        ],
+      },
+      { type: 'h2', id: 'methode', texte: 'Méthode : interface ou API' },
+      { type: 'p', texte: 'Un **relevé d’interface** ouvre la vraie page de l’IA, pose la question depuis le pays du projet et garde ce qui s’affiche : c’est ce que voit un internaute. ChatGPT, Gemini, le Mode IA et les Aperçus IA de Google sont relevés ainsi. Une **réponse d’API** vient du modèle seul, sans l’application autour : c’est le cas de Claude, interrogé par l’API d’Anthropic avec la recherche web.' },
+      { type: 'encadre', ton: 'savoir', titre: 'Jamais additionnées', texte: 'Les deux méthodes ne donnent pas les mêmes réponses. Aucun chiffre de l’outil ne les mélange : Claude a toujours sa propre tuile, sa propre colonne, sa propre courbe. Chaque chiffre porte un tampon « interface » ou « API ».' },
+      { type: 'h2', id: 'presence', texte: 'Présence : citée, nommée, lue, absente' },
+      { type: 'p', texte: 'Pour chaque réponse reçue, l’outil dit comment la marque y figure. La marque est **présente** quand elle est citée ou nommée.' },
+      {
+        type: 'tableau',
+        colonnes: ['État', 'Définition', 'Compte comme présente'],
+        lignes: [
+          ['**Citée**', 'Une page ou une vidéo de la marque figure parmi les sources.', 'oui'],
+          ['**Nommée**', 'Le nom de la marque (ou une de ses autres écritures, ou son domaine) est dans le texte, sans page de la marque citée.', 'oui'],
+          ['**Lue**', 'Une page de la marque a été lue par l’IA, sans être citée.', 'non'],
+          ['**Absente**', 'L’IA a répondu sans la marque.', 'non'],
+          ['**Pas d’aperçu**', 'Google n’a pas affiché d’Aperçu IA (ou l’IA n’a rien affiché). Ce n’est pas une absence : la réponse n’entre pas dans le compte.', 'hors compte'],
+          ['**En attente**', 'La réponse n’est pas encore revenue. Elle se lit plus tard, gratuitement.', 'hors compte'],
+          ['**Échec**', 'Le relevé n’a pas abouti, ou la réponse n’est pas arrivée en 6 heures.', 'hors compte'],
+        ],
+      },
+      { type: 'h2', id: 'chiffres', texte: 'Les chiffres' },
+      {
+        type: 'tableau',
+        colonnes: ['Chiffre', 'Comment il se calcule'],
+        lignes: [
+          ['**Visibilité**', 'Part des réponses reçues où la marque est présente (citée ou nommée), pour une méthode. Elle s’affiche à partir de 5 réponses.'],
+          ['**Part de voix**', 'Mentions de la marque rapportées à celles de la marque et des concurrents suivis, dans les réponses dont les marques sont lues. Sans concurrent suivi, elle ne se calcule pas.'],
+          ['**Rang moyen**', 'Place moyenne de la marque dans la liste des marques nommées, quand elle y figure. Le 1er est le mieux placé.'],
+          ['**Verdict**', 'Pour une question seule, un mot plutôt qu’un pourcentage : « solide » si la marque est dans 6 réponses d’interface sur 10 ou plus, « occasionnelle » en dessous, « absente » à zéro, « trop tôt pour dire » avec moins de 3 réponses.'],
+        ],
+      },
+      { type: 'h2', id: 'marge', texte: 'Échantillon et marge d’erreur' },
+      { type: 'p', texte: 'Une réponse d’IA est un tirage : la même question posée deux fois ne donne pas la même réponse. Chaque chiffre dit donc sur combien de réponses il repose, et la visibilité porte sa **marge d’erreur** (un intervalle de confiance à 95 %). Un **écart** avec la période d’avant n’est coloré que s’il dépasse cette marge : sinon, il est dans le bruit.' },
+      { type: 'p', texte: 'Pour trancher sur une question, la **mesure approfondie** la pose 5, 10 ou 25 fois de suite. Ces relevés comptent pour le verdict de la question, pas dans les chiffres d’ensemble du projet : sinon une question posée 25 fois pèserait 25 fois plus que les autres.' },
+      { type: 'h2', id: 'concurrents', texte: 'Concurrents suivis et marques repérées' },
+      { type: 'p', texte: 'Un **concurrent suivi** est une marque que vous avez choisi de comparer à la vôtre : il entre dans le classement, la part de voix et le face-à-face. Une **marque repérée** est une marque que les IA nomment sur vos questions, pas encore suivie. Suivre une marque repérée est gratuit et ne lance aucun relevé.' },
+      { type: 'h2', id: 'lecture', texte: 'La lecture des réponses' },
+      { type: 'p', texte: 'ChatGPT renvoie lui-même les marques qu’il nomme. Pour les autres IA, un petit modèle de langage lit chaque réponse et en tire les marques nommées, leur ordre et le ton employé (positif, neutre, négatif). C’est un appel payant, d’environ 0,0008 $ par réponse, inscrit au journal des coûts. Le même petit modèle range les sites cités par type, donne un thème et une intention à chaque question, et compare les réponses aux faits vérifiés.' },
+      { type: 'encadre', ton: 'limite', texte: 'Ce que lit le petit modèle peut être faux sur une réponse ambiguë. Chaque fiche renvoie au texte d’origine de la réponse, pour vérifier.' },
+      {
+        type: 'liens',
+        items: [
+          { page: 'reference/glossaire', texte: 'Tous les mots de l’outil, en français et en anglais.' },
+          { page: 'reference/methode' },
+          { page: 'demarrer/premiers-resultats' },
+          { page: 'cas/citee-nommee-ou-absente' },
+        ],
+      },
+    ],
+    en: [
+      { type: 'p', texte: 'GeoTrends uses few words, always with the same meaning. Knowing them avoids the two most common mistakes: adding up things that do not add up, and reading a change that is only chance.' },
+      { type: 'h2', id: 'project-and-brand', texte: 'Project and brand' },
+      { type: 'p', texte: 'A **project** tracks one brand in one market: a country and a language. It brings together the brand’s name, what belongs to it, its competitors and its prompts. The same brand in two markets makes two projects. The project shown is picked at the top of the tool’s menu.' },
+      { type: 'p', texte: 'A brand is more than its site. Its **properties** are its sites, its YouTube channels, its social profiles and the other spellings of its name. A page of one of these sites, a video of one of these channels or a post of one of these profiles, cited by an AI, counts for the brand.' },
+      { type: 'h2', id: 'prompt-and-run', texte: 'Prompt, run, reading, answer' },
+      {
+        type: 'tableau',
+        colonnes: ['Word', 'What it refers to'],
+        lignes: [
+          ['**Prompt**', 'What a potential customer asks an AI, in their own words: “Which invoicing software should a sole trader choose?”. A prompt “without the brand name” does not contain the tracked brand’s name. (The rest of this site calls it a “question”.)'],
+          ['**Run** and **reading**', 'A reading is one prompt asked to one AI at a given moment. A run is the sending of a project’s prompts to several AIs on the same day.'],
+          ['**Answer**', 'What the AI replied, kept as is: its text, the cited sources, the pages read, the searches it ran, the brands mentioned in order. The text is never translated or corrected.'],
+          ['**Source**', 'A page cited by the AI to answer. A page **read** was opened by the AI without being cited: this is only known for ChatGPT and Claude.'],
+        ],
+      },
+      { type: 'h2', id: 'method', texte: 'Method: interface or API' },
+      { type: 'p', texte: 'An **interface reading** opens the AI’s real page, asks the prompt from the project’s country and keeps what is displayed: what a person sees. ChatGPT, Gemini, Google AI Mode and AI Overviews are recorded this way. An **API answer** comes from the bare model, without the application around it: that is the case for Claude, queried through the Anthropic API with web search.' },
+      { type: 'encadre', ton: 'savoir', titre: 'Never added together', texte: 'The two methods do not give the same answers. No number in the tool mixes them: Claude always has its own tile, its own column, its own line. Every number carries an “interface” or “API” stamp.' },
+      { type: 'h2', id: 'presence', texte: 'Presence: cited, mentioned, read, absent' },
+      { type: 'p', texte: 'For each answer received, the tool says how the brand appears in it. The brand is **present** when it is cited or mentioned.' },
+      {
+        type: 'tableau',
+        colonnes: ['Status', 'Definition', 'Counts as present'],
+        lignes: [
+          ['**Cited**', 'A page or a video of the brand is among the sources.', 'yes'],
+          ['**Mentioned**', 'The brand’s name (or one of its other spellings, or its domain) is in the text, without a page of the brand being cited.', 'yes'],
+          ['**Read**', 'A page of the brand was read by the AI, without being cited.', 'no'],
+          ['**Absent**', 'The AI answered without the brand.', 'no'],
+          ['**No overview**', 'Google showed no AI Overview (or the AI displayed nothing). It is not an absence: the answer is left out of the count.', 'left out'],
+          ['**Pending**', 'The answer has not come back yet. It is collected later, for free.', 'left out'],
+          ['**Failed**', 'The reading did not succeed, or the answer did not arrive within 6 hours.', 'left out'],
+        ],
+      },
+      { type: 'h2', id: 'numbers', texte: 'The numbers' },
+      {
+        type: 'tableau',
+        colonnes: ['Number', 'How it is calculated'],
+        lignes: [
+          ['**Visibility**', 'Share of the answers received where the brand is present (cited or mentioned), for one method. It is shown from 5 answers.'],
+          ['**Share of voice**', 'Mentions of the brand relative to those of the brand and its tracked competitors, in the answers whose brands have been read. Without a tracked competitor, it is not calculated.'],
+          ['**Avg. position**', 'Average place of the brand in the list of brands mentioned, when it is in it. 1st is the best placed.'],
+          ['**Verdict**', 'For a single prompt, a word rather than a percentage: “solid” if the brand is in 6 interface answers out of 10 or more, “occasional” below that, “absent” at zero, “too early to tell” with fewer than 3 answers.'],
+        ],
+      },
+      { type: 'h2', id: 'margin', texte: 'Sample and margin of error' },
+      { type: 'p', texte: 'An AI answer is a draw: the same prompt asked twice does not get the same answer. So every number says how many answers it rests on, and visibility carries its **margin of error** (a 95% confidence interval). A **change** from the previous period is only coloured when it exceeds that margin: otherwise it is noise.' },
+      { type: 'p', texte: 'To settle a single prompt, the **deep measurement** asks it 5, 10 or 25 times in a row. Those readings count for the prompt’s verdict, not in the project’s overall numbers: otherwise a prompt asked 25 times would weigh 25 times more than the others.' },
+      { type: 'h2', id: 'competitors', texte: 'Tracked competitors and spotted brands' },
+      { type: 'p', texte: 'A **tracked competitor** is a brand you chose to compare with yours: it enters the ranking, share of voice and head-to-head. A **spotted brand** is one the AIs mention on your prompts, not tracked yet. Tracking a spotted brand is free and starts no run.' },
+      { type: 'h2', id: 'reading', texte: 'Reading the answers' },
+      { type: 'p', texte: 'ChatGPT returns the brands it mentions itself. For the other AIs, a small language model reads each answer and extracts the brands mentioned, their order and the tone used (positive, neutral, negative). It is a paid call, about $0.0008 per answer, logged in the cost journal. The same small model classifies cited sites by type, gives each prompt a topic and an intent, and compares answers with the fact checks.' },
+      { type: 'encadre', ton: 'limite', texte: 'What the small model reads can be wrong on an ambiguous answer. Every sheet links back to the original text of the answer, so you can check.' },
+      {
+        type: 'liens',
+        items: [
+          { page: 'reference/glossaire', texte: 'Every word of the tool, in French and English.' },
+          { page: 'reference/methode' },
+          { page: 'demarrer/premiers-resultats' },
+          { page: 'cas/citee-nommee-ou-absente' },
+        ],
+      },
+    ],
+  },
+}
+
+export default page

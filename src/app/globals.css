@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/*
+ * Palette commune à l'outil et au site public (docs/ANALYSE-INTERFACES.md,
+ * section 6) : papier chaud, encre vert-noir, filets fins, un surligneur
+ * jaune qui ne veut dire qu'une chose (« c'est nous »), et deux couleurs
+ * d'état, le vert et le vermillon.
+ */
+@theme {
+  --color-papier: #f2eee3;
+  --color-papier-fonce: #e8e2d2;
+  --color-clair: #fbf9f3;
+  --color-encre: #14201b;
+  --color-encre-douce: #4d5a54;
+  /* Le texte le plus discret de l'outil : contraste 4,4 sur le papier. */
+  --color-encre-pale: #66716b;
+  --color-filet: rgba(20, 32, 27, 0.16);
+  --color-filet-fort: rgba(20, 32, 27, 0.42);
+  --color-vert: #0b7f5d;
+  --color-vert-pale: #e3ebdd;
+  --color-vermillon: #cf431c;
+  --color-absent: #f6d9cf;
+  --color-absent-texte: #a8320f;
+  --color-surligneur: #ffe35a;
+
+  /* Séries des graphiques, vérifiées sur le papier. */
+  --color-serie-2: #1f5fa8;
+  --color-serie-3: #c07a00;
+  --color-serie-4: #c0508f;
+  --color-serie-5: #2a93a6;
+  --color-serie-6: #6b4f3a;
+  --color-serie-autres: #7b857f;
+
+  /* Grilles colorées : une seule teinte, en six pas. */
+  --color-grille-1: #e3ebdd;
+  --color-grille-2: #c2dac9;
+  --color-grille-3: #93c2ab;
+  --color-grille-4: #5aa487;
+  --color-grille-5: #23876a;
+  --color-grille-6: #0a5a43;
+
+  /* Anciens noms, encore lus par la page de connexion. */
+  --color-fond: #f2eee3;
+  --color-carte: #fbf9f3;
+  --color-accent: #14201b;
+  --color-accent-fort: #2c3a34;
+  --color-accent-pale: #e8e2d2;
+  --color-alerte: #a8320f;
+  --color-alerte-pale: #f6d9cf;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  background: var(--color-papier);
+  color: var(--color-encre);
+}
+
+.chiffre {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}

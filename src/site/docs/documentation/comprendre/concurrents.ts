@@ -1,0 +1,186 @@
+import type { PageDoc } from '../../types'
+
+// Écran /concurrents (src/app/(app)/concurrents/page.tsx), classement des marques
+// dans src/lib/classements.ts (classerMarques, concurrentDe).
+const page: PageDoc = {
+  id: 'comprendre/concurrents',
+  rubrique: 'comprendre',
+  slug: { fr: 'comprendre/concurrents', en: 'understand/competitors' },
+  titre: { fr: 'Concurrents et part de voix', en: 'Competitors and share of voice' },
+  resume: {
+    fr: 'Quelles marques les IA nomment sur vos questions, à quel rang et dans quelle part des réponses : classement, part de voix, face-à-face, question par question.',
+    en: 'Which brands the AIs mention on your prompts, at what position and in what share of the answers: ranking, share of voice, head-to-head, prompt by prompt.',
+  },
+  ecrans: ['/concurrents'],
+  maj: '2026-11-18',
+  contenu: {
+    fr: [
+      { type: 'p', texte: 'L’écran Concurrents répond à une question : quand un client pose vos questions, quelles marques les IA lui recommandent, et où se place la vôtre ? Il sert à choisir contre qui travailler, et sur quelles questions.' },
+      { type: 'p', texte: 'On y arrive aussi depuis la vue d’ensemble, par **Tout le classement** ou **Tous les concurrents**. En haut à droite, **Gérer les concurrents suivis** ouvre l’onglet Concurrents de la fiche du projet, où l’on déclare aussi le site de chacun.' },
+      { type: 'capture', nom: 'concurrents', legende: 'L’écran Concurrents du projet Facturo : le classement de Facturo face à Comptalis, Devizo, Tikette et Billbox, puis la part de voix et son évolution.' },
+      { type: 'h2', id: 'base', texte: 'Sur quoi tout est compté' },
+      { type: 'p', texte: 'Tous les chiffres de l’écran se comptent sur les **réponses lues** : les réponses d’interface dont on connaît les marques nommées, dans l’ordre. ChatGPT renvoie lui-même ses marques ; pour les autres IA, elles sont tirées du texte par la lecture automatique. Tant que des réponses ne sont pas lues, un bandeau propose **Lire les réponses**, avec son prix. Claude, mesuré par son API, a sa propre colonne et n’entre dans aucun total.' },
+      { type: 'p', texte: 'Une mention qui contient le nom d’un concurrent suivi compte pour lui : « Comptalis Facturation » compte pour Comptalis. La comparaison ignore les majuscules, les accents et la ponctuation, et le nom du concurrent doit faire au moins trois lettres.' },
+      { type: 'h2', id: 'classement', texte: 'Le classement' },
+      { type: 'p', texte: 'Le bloc **Classement** range votre marque et les concurrents suivis, du plus nommé au moins nommé. Sans concurrent suivi, l’écran propose d’abord **Suivez vos premiers concurrents**, avec la liste des marques repérées.' },
+      {
+        type: 'tableau',
+        colonnes: ['Colonne', 'Définition'],
+        lignes: [
+          ['**Marque**', 'Un clic ouvre les réponses qui la nomment.'],
+          ['**Nommée dans**', 'Part des réponses lues qui nomment la marque, avec le compte (« 9 sur 30 », par exemple).'],
+          ['**Part de voix**', 'Mentions de la marque rapportées à celles de votre marque et des concurrents suivis.'],
+          ['**Rang moyen**', 'Place moyenne de la marque dans la liste des marques nommées, quand elle est nommée.'],
+          ['**En premier**', 'Nombre de réponses où elle est la première marque nommée.'],
+          ['**Questions**', 'Nombre de questions où elle est nommée au moins une fois.'],
+          ['**IA**', 'Les IA d’interface qui la nomment.'],
+          ['**Écart**', 'Écart avec la période d’avant, coloré seulement au-delà de la marge d’erreur.'],
+          ['**Claude (API)**', 'Réponses de Claude qui la nomment, sur les réponses de Claude lues. Compté à part.'],
+        ],
+      },
+      { type: 'h2', id: 'part-de-voix', texte: 'Part de voix et évolution' },
+      { type: 'p', texte: 'Le bloc **Part de voix** rapporte vos mentions à celles des concurrents suivis : elle n’existe qu’avec au moins un concurrent suivi, et change dès que vous en ajoutez un. À côté, **Dans le temps : nous et les cinq premiers** trace, relevé après relevé, la part des réponses lues qui nomment chaque marque : la vôtre et cinq autres au plus (les concurrents suivis d’abord, sinon les marques les plus nommées). Le bouton **CSV** exporte les données de la courbe.' },
+      { type: 'p', texte: '**À quel rang chaque marque est nommée** compte, pour votre marque et ces cinq autres, les réponses où elle est nommée en 1er, 2e, 3e, ou 4e et plus. La dernière colonne, **Jamais nommée**, donne les réponses lues où elle n’apparaît pas. Plus la case est foncée, plus le nombre est grand.' },
+      { type: 'h2', id: 'grille', texte: 'Question par question, IA par IA' },
+      { type: 'p', texte: 'Une ligne par question, une colonne par IA, avec le dernier relevé de chaque IA. Le choix **Voir** change ce que dit chaque case :' },
+      {
+        type: 'tableau',
+        colonnes: ['Vue', 'Ce que montre la case'],
+        lignes: [
+          ['**Notre rang**', 'Le rang de votre marque (1er, 2e…), « présente » si elle est nommée sans rang connu, « absente » sinon. Un clic ouvre la réponse.'],
+          ['**Premier nommé**', 'La marque nommée en premier dans la réponse.'],
+          ['**Face à un concurrent**', 'Le choix **Face à** désigne le concurrent. La case dit « Nous devant », « Comptalis devant » (avec les deux rangs), « Nous seuls », « Comptalis seul » ou « Aucun des deux ».'],
+        ],
+      },
+      { type: 'p', texte: 'Un point signifie qu’il n’y a pas de réponse à lire : question pas encore relevée, ou pas d’Aperçu IA. « pas lu » : les marques de cette réponse ne sont pas encore connues. La colonne **Couverture** compte les IA d’interface où votre marque apparaît, sur celles qui ont répondu.' },
+      { type: 'h2', id: 'face-a-face', texte: 'Le face-à-face' },
+      { type: 'p', texte: 'Le bloc **Face-à-face** met les mesures en lignes et les marques en colonnes : votre marque et quatre concurrents au plus. La meilleure case de chaque ligne est marquée d’un trait vert.' },
+      {
+        type: 'liste',
+        items: [
+          '**Nommée dans (part des réponses lues)**, **Nommée en premier**, **Rang moyen quand nommée** (le plus petit l’emporte).',
+          '**Questions où elle apparaît** et **IA d’interface qui la nomment**, sur le total de questions et d’IA.',
+          '**Mentions positives**, quand le ton a été lu : les réponses qui recommandent la marque, sur celles dont le ton est connu.',
+          'Une dernière ligne, séparée : **Claude (API) : réponses qui la nomment**.',
+        ],
+      },
+      { type: 'h2', id: 'reperees', texte: 'Les marques repérées' },
+      { type: 'p', texte: 'Le bloc **Marques repérées, pas encore suivies** liste les autres marques que les IA nomment sur vos questions, avec leurs **Réponses**, **En premier**, **Rang moyen**, **Questions** et **Claude (API)**. Un clic sur une ligne ouvre sa fiche : la description relevée dans les réponses, les questions où elle est nommée, et **Voir les réponses qui la nomment**.' },
+      {
+        type: 'liste',
+        items: [
+          '**Suivre** en fait un concurrent du projet : elle entre dans le classement, la part de voix et le face-à-face. C’est gratuit et ne lance aucun relevé.',
+          '**Ignorer** la retire de cette liste, sans rien changer aux chiffres : utile pour un nom générique ou un outil qui n’est pas un concurrent.',
+          '**Voir les marques écartées** affiche celles que vous avez ignorées ; **Remettre** les fait revenir.',
+        ],
+      },
+      { type: 'h2', id: 'pas-a-pas', texte: 'Savoir contre qui travailler' },
+      {
+        type: 'etapes',
+        items: [
+          { titre: 'Lire la phrase du haut', texte: 'Elle dit quelle marque est la plus nommée, sur combien de réponses lues, et où en est la vôtre.' },
+          { titre: 'Suivre trois à cinq concurrents', texte: 'Dans **Marques repérées, pas encore suivies**, cliquez **Suivre** sur celles qui reviennent le plus souvent et qui sont de vrais concurrents. Le classement et la part de voix se remplissent aussitôt, sans nouveau relevé.' },
+          { titre: 'Comparer la part de voix et son écart', texte: 'Un écart coloré est réel ; gris, il reste dans la marge d’erreur.' },
+          { titre: 'Trouver les questions où un concurrent mène', texte: 'Dans la grille, choisissez **Face à un concurrent**, puis le concurrent. Les cases « Comptalis devant » ou « Comptalis seul » sont les questions à reprendre.' },
+          { titre: 'Comprendre grâce à quoi il est nommé', texte: 'Ouvrez la réponse depuis la grille, puis l’écran Sources : les pages citées à côté du concurrent disent où il faut apparaître.' },
+        ],
+      },
+      { type: 'h2', id: 'limites', texte: 'Limites' },
+      { type: 'encadre', ton: 'limite', texte: 'Les marques, leur rang et le ton sont lus dans le texte par un petit modèle, sauf pour ChatGPT : sur une réponse ambiguë, il peut se tromper, et chaque case renvoie au texte d’origine. La part de voix ne compte que les concurrents suivis : elle change quand la liste change. Avec une réponse par question et par IA à chaque date, les écarts restent souvent dans la marge d’erreur. Pour ne regarder que les réponses qui nomment un concurrent, utilisez le filtre **Face à** de la barre du haut.' },
+      {
+        type: 'liens',
+        items: [
+          { page: 'projet/concurrents' },
+          { page: 'comprendre/sources' },
+          { page: 'cas/qui-est-cite-a-ma-place' },
+          { page: 'cas/concurrent-qui-s-installe' },
+        ],
+      },
+    ],
+    en: [
+      { type: 'p', texte: 'The Competitors screen answers one question: when a customer asks your prompts, which brands do the AIs recommend, and where does yours stand? It helps you choose whom to work against, and on which prompts.' },
+      { type: 'p', texte: 'You also get there from the overview, through **Full ranking** or **All competitors**. At the top right, **Manage tracked competitors** opens the Competitors tab of the project page, where each competitor’s site is also declared.' },
+      { type: 'capture', nom: 'concurrents', legende: 'The Competitors screen of the Facturo UK project: the ranking of Facturo against Comptalis, Devizo, Tikette and Billbox, then share of voice and its trend.' },
+      { type: 'h2', id: 'basis', texte: 'What everything is counted on' },
+      { type: 'p', texte: 'Every number on the screen is counted on the **answers read**: the interface answers whose mentioned brands are known, in order. ChatGPT returns its brands itself; for the other AIs, they are extracted from the text by the automatic reading. While some answers are not read, a banner offers **Read the answers**, with its price. Claude, measured through its API, has its own column and is never part of a total.' },
+      { type: 'p', texte: 'A mention that contains a tracked competitor’s name counts for it: “Comptalis Invoicing” counts for Comptalis. The comparison ignores case, accents and punctuation, and the competitor’s name must be at least three letters long.' },
+      { type: 'h2', id: 'ranking', texte: 'The ranking' },
+      { type: 'p', texte: 'The **Ranking** block orders your brand and the tracked competitors, from most to least mentioned. With no tracked competitor, the screen first offers **Track your first competitors**, with the list of spotted brands.' },
+      {
+        type: 'tableau',
+        colonnes: ['Column', 'Definition'],
+        lignes: [
+          ['**Brand**', 'A click opens the answers that mention it.'],
+          ['**Mentioned in**', 'Share of the answers read that mention the brand, with the count (“9 out of 30”, for example).'],
+          ['**Share of voice**', 'Mentions of the brand relative to those of your brand and the tracked competitors.'],
+          ['**Avg. position**', 'Average place of the brand in the list of brands mentioned, when it is mentioned.'],
+          ['**First**', 'Number of answers where it is the first brand mentioned.'],
+          ['**Prompts**', 'Number of prompts where it is mentioned at least once.'],
+          ['**AI**', 'The interface AIs that mention it.'],
+          ['**Change**', 'Change from the previous period, coloured only beyond the margin of error.'],
+          ['**Claude (API)**', 'Claude answers that mention it, out of the Claude answers read. Counted separately.'],
+        ],
+      },
+      { type: 'h2', id: 'share-of-voice', texte: 'Share of voice and trend' },
+      { type: 'p', texte: 'The **Share of voice** block relates your mentions to those of the tracked competitors: it only exists with at least one tracked competitor, and it changes as soon as you add one. Next to it, **Over time: us and the top five** draws, run after run, the share of the answers read that mention each brand: yours and up to five others (tracked competitors first, otherwise the most mentioned brands). The **CSV** button exports the chart’s data.' },
+      { type: 'p', texte: '**Position at which each brand is mentioned** counts, for your brand and those five others, the answers where it is named 1st, 2nd, 3rd, or 4th and beyond. The last column, **Never mentioned**, gives the answers read where it does not appear. The darker the cell, the higher the number.' },
+      { type: 'h2', id: 'grid', texte: 'Prompt by prompt, AI by AI' },
+      { type: 'p', texte: 'One row per prompt, one column per AI, with each AI’s latest reading. The **View** choice changes what each cell says:' },
+      {
+        type: 'tableau',
+        colonnes: ['View', 'What the cell shows'],
+        lignes: [
+          ['**Our position**', 'Your brand’s position (1st, 2nd…), “present” if it is mentioned without a known position, “absent” otherwise. A click opens the answer.'],
+          ['**Named first**', 'The brand mentioned first in the answer.'],
+          ['**Versus a competitor**', 'The **Versus** choice picks the competitor. The cell says “We lead”, “Comptalis leads” (with both positions), “Only us”, “Only Comptalis” or “Neither”.'],
+        ],
+      },
+      { type: 'p', texte: 'A dot means there is no answer to read: prompt not run yet, or no AI Overview. “not read”: the brands of this answer are not known yet. The **Coverage** column counts the interface AIs where your brand appears, out of those that answered.' },
+      { type: 'h2', id: 'head-to-head', texte: 'Head-to-head' },
+      { type: 'p', texte: 'The **Head-to-head** block puts metrics in rows and brands in columns: your brand and up to four competitors. The best cell of each row carries a green rule.' },
+      {
+        type: 'liste',
+        items: [
+          '**Mentioned in (share of answers read)**, **Named first**, **Avg. position when mentioned** (the smallest wins).',
+          '**Prompts where it appears** and **Interface AIs mentioning it**, out of the total number of prompts and AIs.',
+          '**Positive mentions**, once the tone has been read: answers that recommend the brand, out of those whose tone is known.',
+          'A last row, set apart: **Claude (API): answers mentioning it**.',
+        ],
+      },
+      { type: 'h2', id: 'spotted', texte: 'Spotted brands' },
+      { type: 'p', texte: 'The **Brands spotted, not tracked yet** block lists the other brands the AIs mention on your prompts, with their **Answers**, **First**, **Avg. position**, **Prompts** and **Claude (API)**. Clicking a row opens its sheet: the description picked up in the answers, the prompts where it is mentioned, and **See the answers mentioning it**.' },
+      {
+        type: 'liste',
+        items: [
+          '**Track** makes it a competitor of the project: it enters the ranking, share of voice and head-to-head. It is free and starts no run.',
+          '**Dismiss** removes it from this list without changing any figure: useful for a generic name or a tool that is not a competitor.',
+          '**See dismissed brands** shows the ones you dismissed; **Restore** brings them back.',
+        ],
+      },
+      { type: 'h2', id: 'step-by-step', texte: 'Knowing whom to work against' },
+      {
+        type: 'etapes',
+        items: [
+          { titre: 'Read the headline sentence', texte: 'It says which brand is mentioned most, out of how many answers read, and where yours stands.' },
+          { titre: 'Track three to five competitors', texte: 'In **Brands spotted, not tracked yet**, click **Track** on the ones that come back most often and are real competitors. The ranking and share of voice fill in at once, with no new run.' },
+          { titre: 'Compare share of voice and its change', texte: 'A coloured change is real; a grey one stays within the margin of error.' },
+          { titre: 'Find the prompts where a competitor leads', texte: 'In the grid, choose **Versus a competitor**, then the competitor. The “Comptalis leads” or “Only Comptalis” cells are the prompts to win back.' },
+          { titre: 'Understand what it is mentioned for', texte: 'Open the answer from the grid, then the Sources screen: the pages cited next to the competitor tell you where you need to appear.' },
+        ],
+      },
+      { type: 'h2', id: 'limits', texte: 'Limits' },
+      { type: 'encadre', ton: 'limite', texte: 'Brands, their position and the tone are read from the text by a small model, except for ChatGPT: on an ambiguous answer it can be wrong, and every cell links back to the original text. Share of voice only counts tracked competitors: it changes when the list changes. With one answer per prompt and per AI on each date, changes often stay within the margin of error. To look only at the answers that mention a competitor, use the **Versus** filter in the top bar.' },
+      {
+        type: 'liens',
+        items: [
+          { page: 'projet/concurrents' },
+          { page: 'comprendre/sources' },
+          { page: 'cas/qui-est-cite-a-ma-place' },
+          { page: 'cas/concurrent-qui-s-installe' },
+        ],
+      },
+    ],
+  },
+}
+
+export default page

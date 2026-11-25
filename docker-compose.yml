@@ -1,0 +1,89 @@
+# GeoTrends chez vous : l'outil, sa base de données et sa tâche de fond.
+#
+#   docker compose up -d --build
+#
+# Sur votre ordinateur : http://localhost:3010. Sur un serveur, avec un nom de
+# domaine : DOMAINE et COMPOSE_PROFILES="https" dans .env démarrent aussi le
+# service « caddy », qui obtient le certificat HTTPS tout seul.
+#
+# Tous les réglages se lisent dans le fichier .env (modèle : .env.example ;
+# le script ./installer.sh l'écrit pour vous). Guide : docs/fr/demarrer/installer.md
+name: geotrends
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-geotrends}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Renseignez POSTGRES_PASSWORD dans le fichier .env}
+      POSTGRES_DB: ${POSTGRES_DB:-geotrends}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  # L'outil. Les migrations de la base passent toutes seules à chaque démarrage.
+  app:
+    build: .
+    image: geotrends
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-geotrends}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-geotrends}
+    # Par défaut, l'outil n'écoute que sur la machine elle-même. Avec un nom de
+    # domaine, c'est le service « caddy » ci-dessous qui le rend accessible en HTTPS.
+    ports:
+      - '${GEOTRENDS_ADRESSE:-127.0.0.1}:${GEOTRENDS_PORT:-3010}:3010'
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -q -O /dev/null http://127.0.0.1:3010/connexion || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    restart: unless-stopped
+
+  # La tâche de fond, toutes les demi-heures : elle récupère les réponses prêtes,
+  # lance les relevés automatiques que vous avez activés (jamais au-delà du
+  # plafond mensuel), fait lire les réponses et envoie le rapport du lundi.
+  taches:
+    image: geotrends
+    pull_policy: never
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-geotrends}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-geotrends}
+    command: ['sh', '-c', 'while true; do npm run --silent taches; sleep 1800; done']
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # HTTPS automatique pour un nom de domaine (certificat Let's Encrypt). Ne démarre
+  # qu'avec COMPOSE_PROFILES="https" dans .env. Les ports 80 et 443 du serveur
+  # doivent être libres et le nom de domaine doit déjà pointer vers lui.
+  caddy:
+    profiles: [https]
+    image: caddy:2-alpine
+    command: caddy reverse-proxy --from ${DOMAINE:-localhost} --to app:3010
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:
